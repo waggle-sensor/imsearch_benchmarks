@@ -18,9 +18,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # Configuration
-# COCO class names (all 80 classes by default)
-# To use specific classes, modify this list or set to None to use all classes
-#TODO: Set these to the COCO classes you want to use
+# COCO class names (all 80 classes by default) or set to None
+# To use specific classes, modify this list
 COCO_CLASSES = [
     "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
     "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
@@ -37,8 +36,7 @@ COCO_CLASSES = [
 
 # Total sample size (if set, will sample this many images total across all classes)
 # Set to None to use all available images
-#TODO: Set these to the number of images you want to use
-MAX_SAMPLES = None  # Set to a number to limit total samples (e.g., 1000)
+MAX_SAMPLES = 5320  # Set to a number to limit total samples (e.g., 1000)
 
 # Output configuration
 OUTPUT_DIR = "/tmp/CommonObjectsBenchMaker/images/coco"
