@@ -32,27 +32,33 @@ MAX_WORKERS = 10
 # Configuration
 # Time frame for querying (ISO format: "YYYY-MM-DDTHH:MM:SS.000Z")
 # Set these to your desired time range
-#TODO: Set these to start of sage to now
-TIME_FRAME_START = "2024-01-01T00:00:00.000Z"  # Start date
-TIME_FRAME_END = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")    # End date
+TIME_FRAME_START = "2022-01-01T00:00:00.000Z"  # Start date
+TIME_FRAME_END = (datetime.now() - timedelta(weeks=1)).strftime("%Y-%m-%dT%H:%M:%S.000Z")    # End date
 
 # Time slot configuration
-#TODO: Configure these
-NUM_TIME_SLOTS = 10  # Number of random time slots to sample
-TIME_SLOT_DURATION_HOURS = 1  # Duration of each time slot in hours
+# Compute number of possible days and set NUM_TIME_SLOTS adaptively
+TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000Z"
+time_start = datetime.strptime(TIME_FRAME_START, TIME_FORMAT)
+time_end = datetime.strptime(TIME_FRAME_END, TIME_FORMAT)
+total_days = (time_end - time_start).days
+
+# Choose around 1 time slot per week, but cap to a reasonable number for distributed sampling
+NUM_TIME_SLOTS = min(max(total_days // 7, 20), 360)  # e.g., 1 per week, min 20, max 360
+TIME_SLOT_DURATION_HOURS = 0.5  # Duration of each time slot in hours
 
 # VSN configuration
-# Set to None to query all available VSNs, or provide a list like ["W097", "W019", "W020"]
-#TODO: Set these to the VSNs you want to query
-VSN_LIST = None  # None = query all available VSNs
+URBAN_IMAGERY = os.getenv("URBAN_IMAGERY", "false").lower()
+if URBAN_IMAGERY == "true":
+    UNALLOWED_NODES = []
+else:
+    UNALLOWED_NODES = ["W042", "N001", "V012", "W015", "W01C", "W01E", "W024", "W026", "W02C", "W02D", "W02E", "W02F", "W031", "W040", "W046", "W047", "W048", "W049", "W04A", "W051", "W055", "W059", "W05A", "W05B", "W05C", "W05D", "W05E", "W05F", "W060", "W061", "W062", "W063", "W064", "W065", "W066", "W06E", "W072", "W073", "W074", "W075", "W076", "W077", "W078", "W079", "W07A", "W07B", "W07D", "W07E", "W07F", "W080", "W081", "W086", "W088", "W089", "W08A", "W08B", "W08D", "W08E", "W08F", "W090", "W091", "W092", "W094", "W096", "W099", "W09B", "W09E", "W0A0", "W0A1", "W0BB", "W0BC"]
+UNALLOWED_NODES_SET = set(UNALLOWED_NODES).lower()
 
 # Image task types to query
-#TODO: Set these to all the image tasks
-IMAGE_TASKS = ["imagesampler-mobotix", "imagesampler-bottom"]
+IMAGE_TASKS = "imagesampler-.*"
 
 # Sample size
-#TODO: Set these to the number of images you want to use
-SAMPLE_SIZE = 1000  # Total number of images to sample
+SAMPLE_SIZE = 2280  # Total number of images to sample
 
 # Output configuration
 OUTPUT_DIR = "/tmp/CommonObjectsBenchMaker/images/sage"
@@ -178,44 +184,44 @@ def generate_random_time_slots(start_str, end_str, num_slots, duration_hours, ra
     
     return slots
 
-def query_sage_images(time_slots, vsn_list, image_tasks):
-    """Query Sage images for given time slots and VSNs."""
+def query_sage_images(time_slots: list[tuple[str, str]]) -> pd.DataFrame:
+    """Query Sage images for given time slots."""
+
     all_dfs = []
-    
     for slot_start, slot_end in time_slots:
         logger.info(f"Querying time slot: {slot_start} to {slot_end}")
-        
-        for task in image_tasks:
-            if vsn_list is None:
-                # Query all VSNs (no vsn filter)
-                try:
-                    df = sage_data_client.query(
-                        start=slot_start,
-                        end=slot_end,
-                        filter={"task": task}
-                    )
-                    if df is not None and len(df) > 0:
-                        logger.info(f"Found {len(df)} images for task '{task}' in time slot")
-                        all_dfs.append(df)
-                except Exception as e:
-                    logger.warning(f"Failed to query task '{task}' for time slot: {e}")
-            else:
-                # Query specific VSNs
-                for vsn in vsn_list:
-                    try:
-                        df = sage_data_client.query(
-                            start=slot_start,
-                            end=slot_end,
-                            filter={
-                                "vsn": vsn,
-                                "task": task
-                            }
-                        )
-                        if df is not None and len(df) > 0:
-                            logger.info(f"Found {len(df)} images for VSN '{vsn}', task '{task}' in time slot")
-                            all_dfs.append(df)
-                    except Exception as e:
-                        logger.warning(f"Failed to query VSN '{vsn}', task '{task}' for time slot: {e}")
+
+        try:
+            df = sage_data_client.query(
+                start=slot_start,
+                end=slot_end,
+                filter={
+                    "task": IMAGE_TASKS
+                }
+            )
+
+            # Check if any images were found
+            if len(df) <= 0:
+                logger.warning(f"No images found for time slot: {slot_start} to {slot_end}")
+                continue
+            
+            # Remove urban nodes
+            logger.info(f"Found {len(df)} images for time slot: {slot_start} to {slot_end}")
+            df = df[~df['meta.vsn'].apply(lambda x: x.strip().lower() not in UNALLOWED_NODES_SET)]
+            if len(df) <= 0:
+                logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after removing urban nodes")
+                continue
+            
+            # Remove top camera images
+            df = df[~df['meta.task'].apply(lambda x: x.strip().lower() != "imagesampler-top")]
+            if len(df) <= 0:
+                logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after removing top camera images")
+                continue
+            
+            all_dfs.append(df)
+        except Exception as e:
+            logger.warning(f"Failed to query time slot: {slot_start} to {slot_end}: {e}")
+            continue
     
     if len(all_dfs) == 0:
         logger.warning("No images found in any time slots")
@@ -237,12 +243,10 @@ def main():
     logger.info(f"Using random seed: {RANDOM_SEED}")
     
     # Determine VSN list
-    if VSN_LIST is None:
-        logger.info("VSN_LIST is None, querying all VSNs...")
-        vsn_list = None
+    if URBAN_IMAGERY == "true":
+        logger.info("Urban imagery is enabled, urban VSNs will be queried...")
     else:
-        vsn_list = VSN_LIST
-        logger.info(f"Using specified VSN list: {vsn_list}")
+        logger.info("Urban imagery is disabled, no urban VSNs will be queried...")
     
     # Generate random time slots
     logger.info(f"Generating {NUM_TIME_SLOTS} random time slots...")
@@ -258,7 +262,7 @@ def main():
     
     # Query Sage images
     logger.info("Querying Sage data...")
-    df = query_sage_images(time_slots, vsn_list, IMAGE_TASKS)
+    df = query_sage_images(time_slots)
     
     if len(df) == 0:
         logger.error("No images found. Please check your time frame and VSN configuration.")
