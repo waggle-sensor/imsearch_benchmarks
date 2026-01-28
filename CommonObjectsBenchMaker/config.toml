@@ -1,0 +1,145 @@
+# CommonObjectsBenchMaker Configuration
+# This config file maps CommonObjectsBenchMaker settings to the imsearch_benchmaker framework
+
+# log level
+log_level = "INFO"
+
+#dataset description
+benchmark_name = "CommonObjectsBench"
+benchmark_description = "A benchmark for general object image retrieval"
+benchmark_author = "Francisco Lozano"
+benchmark_author_email = "francisco.lozano@northwestern.edu"
+benchmark_author_affiliation = "Northwestern University"
+benchmark_author_orcid = "0009-0003-8823-4046"
+benchmark_author_github = "FranciscoLozCoding"
+
+# Column names (matching CommonObjectsBenchMaker structure)
+column_image = "image"
+column_image_id = "image_id"
+column_mime_type = "mime_type"
+column_license = "license"
+column_doi = "doi"
+column_query = "query_text"
+column_query_id = "query_id"
+column_relevance = "relevance_label"
+column_tags = "tags"
+column_summary = "summary"
+column_confidence = "confidence"
+
+# Image URL configuration
+image_base_url = "https://web.lcrc.anl.gov/public/waggle/datasets/CommonObjectsBench/images"
+image_url_temp_column = "image_url"
+
+# File paths
+image_root_dir = "/tmp/CommonObjectsBenchMaker/images"
+meta_json = "/tmp/CommonObjectsBenchMaker/images/rights_map.json"
+images_jsonl = "/Volumes/data/inputs/images.jsonl"
+seeds_jsonl = "/Volumes/data/inputs/seeds.jsonl"
+annotations_jsonl = "/Volumes/data/outputs/annotations.jsonl"
+query_plan_jsonl = "/Volumes/data/outputs/query_plan.jsonl"
+qrels_jsonl = "/Volumes/data/outputs/commonobjectsbench_qrels.jsonl"
+qrels_with_score_jsonl = "/Volumes/data/outputs/commonobjectsbench_qrels_with_similarity_score.jsonl"
+summary_output_dir = "/Volumes/data/outputs/summary"
+hf_dataset_dir = "/Volumes/data/outputs/hf_dataset"
+hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchmarks/CommonObjectsBenchMaker/dataset_card.md"
+
+# Query planning
+query_plan_num_seeds = 300  # Number of seed images to use for query generation
+query_plan_neg_total = 40
+query_plan_neg_hard = 25
+query_plan_neg_nearmiss = 10
+query_plan_neg_easy = 5
+query_plan_random_seed = 42
+query_plan_seed_image_ids_column = "seed_image_ids"
+query_plan_candidate_image_ids_column = "candidate_image_ids"
+
+# Hugging Face configuration (sensitive fields use _ prefix)
+_hf_repo_id = "sagecontinuum/CommonObjectsBench"
+_hf_private = false
+
+# Vision adapter configuration (OpenAI)
+[vision_config]
+adapter = "openai"
+model = "gpt-5-mini"
+system_prompt = """You are labeling images for a general object retrieval benchmark.
+Output MUST be valid JSON matching the schema. Do not include extra keys.
+Tagging rules:
+- Prefer tags that help retrieval and describe common objects and scenes.
+- Avoid redundant near-duplicates; pick the most specific tag."""
+user_prompt = """Analyze the image and output JSON with:
+- summary: <= 30 words, factual, no speculation
+- tags: choose 12-18 tags ONLY from the provided enum list for the tags field
+- confidence: 0..1 per field"""
+max_output_tokens = 4000
+reasoning_effort = "low"
+image_detail = "low"  # "low" saves tokens
+max_images_per_batch = 900
+max_concurrent_batches = 1
+completion_window = "24h"  # Completion window for the batch
+
+# Pricing configuration (required for cost calculation)
+# Prices are per million tokens. All values must be explicitly set.
+price_per_million_input_tokens = 0.125  # Text input tokens
+price_per_million_output_tokens = 1.00  # Text output tokens
+price_per_million_cached_input_tokens = 0.0125  # Text cached input tokens
+price_per_million_image_input_tokens = 0.125  # Image input tokens
+price_per_million_image_output_tokens = 1.00  # Image output tokens
+
+# Controlled tag vocabulary (general objects and scenes)
+min_tags = 14
+max_tags = 25
+controlled_tag_vocab = [
+    # --- Common objects ---
+    "person", "people", "child", "adult", "animal", "dog", "cat", "bird", "horse", "cow",
+    "vehicle", "car", "truck", "bus", "motorcycle", "bicycle", "airplane", "boat", "train",
+    "furniture", "chair", "table", "bed", "sofa", "desk",
+    "electronics", "phone", "computer", "laptop", "television", "camera",
+    "food", "fruit", "vegetable", "bread", "meat", "drink", "bottle", "cup", "plate", "bowl",
+    "clothing", "shirt", "pants", "shoes", "hat", "bag",
+    "sports", "ball", "racket", "bicycle", "skateboard",
+    "building", "house", "office", "store", "school", "church",
+    "nature", "tree", "flower", "grass", "sky", "cloud", "sun", "moon", "star",
+    "water", "ocean", "lake", "river", "beach", "mountain", "hill", "valley",
+    "indoor", "outdoor", "urban", "rural", "suburban",
+    "day", "night", "sunny", "cloudy", "rainy", "snowy",
+    "close_up", "mid_range", "far_range", "wide_angle", "telephoto",
+    "portrait", "landscape", "still_life", "action", "group",
+    "colorful", "monochrome", "bright", "dark", "high_contrast", "low_contrast",
+    "sharp", "blurry", "motion_blur", "clear", "detailed",
+]
+
+# Judge adapter configuration (OpenAI)
+[judge_config]
+adapter = "openai"
+model = "gpt-5-mini"
+system_prompt = """You are creating and judging an image-retrieval benchmark for general objects.
+You will receive a query seed (1-3 seed images described by text) and a list of candidates.
+DO NOT use file names, dataset sources, IDs, or rights info for relevance.
+Judge relevance ONLY from the summaries + metadata provided.
+Output MUST be valid JSON matching the schema.
+Binary relevance only: 1 relevant, 0 not relevant."""
+user_prompt = """Tasks:
+1) Write a realistic query_text (what someone would ask for in a search engine) describing the target objects or scene.
+2) Label each candidate image as relevant (1) or not relevant (0) to that query.
+Be consistent with the query and try to make the query as concise as possible."""
+max_output_tokens = 8000
+reasoning_effort = "medium"
+max_queries_per_batch = 600
+max_candidates = 100
+max_concurrent_batches = 1
+completion_window = "24h"  # Completion window for the batch
+
+# Pricing configuration (required for cost calculation)
+# Prices are per million tokens. All values must be explicitly set.
+price_per_million_input_tokens = 0.125  # Text input tokens 
+price_per_million_output_tokens = 1.00  # Text output tokens
+price_per_million_cached_input_tokens = 0.0125  # Text cached input tokens
+
+# Similarity adapter configuration (CLIP)
+[similarity_config]
+adapter = "local_clip"
+model = "apple/DFN5B-CLIP-ViT-H-14-378"
+col_name = "clip_score"
+device = "cpu"  # Device to run inference on 
+use_safetensors = true  # Use safetensors format for model loading
+
