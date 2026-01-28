@@ -127,6 +127,8 @@ python tools/get_sage.py
 - Output directory: `/tmp/FireBench/images/sage`
 - Requires Sage credentials
 
+>NOTE: The timeframe is set to 2025-12-10 to 2025-12-11 since that was an eruption day for Hawaii's volcano viewable by node W097.
+
 ## Configuration
 
 All pipeline configuration is managed through `config.toml`. Key settings include:
