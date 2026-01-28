@@ -74,7 +74,7 @@ def get_coco_images(classes, split=COCO_SPLIT, max_samples=None, random_seed=RAN
         dataset = foz.load_zoo_dataset(
             "coco-2017",
             split=split,
-            label_types=["detections"],
+            label_types=["detections", "captions"],
             classes=classes,
             max_samples=max_samples,
         )
