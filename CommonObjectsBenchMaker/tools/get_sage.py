@@ -47,12 +47,30 @@ NUM_TIME_SLOTS = min(max(total_days // 7, 20), 360)  # e.g., 1 per week, min 20,
 TIME_SLOT_DURATION_HOURS = 0.5  # Duration of each time slot in hours
 
 # VSN configuration
+# Set SAGE_URBAN_IMAGERY=true environment variable to include urban nodes
 SAGE_URBAN_IMAGERY = os.getenv("SAGE_URBAN_IMAGERY", "false").lower()
 if SAGE_URBAN_IMAGERY == "true":
     UNALLOWED_NODES = []
 else:
-    UNALLOWED_NODES = ["W042", "N001", "V012", "W015", "W01C", "W01E", "W024", "W026", "W02C", "W02D", "W02E", "W02F", "W031", "W040", "W046", "W047", "W048", "W049", "W04A", "W051", "W055", "W059", "W05A", "W05B", "W05C", "W05D", "W05E", "W05F", "W060", "W061", "W062", "W063", "W064", "W065", "W066", "W06E", "W072", "W073", "W074", "W075", "W076", "W077", "W078", "W079", "W07A", "W07B", "W07D", "W07E", "W07F", "W080", "W081", "W086", "W088", "W089", "W08A", "W08B", "W08D", "W08E", "W08F", "W090", "W091", "W092", "W094", "W096", "W099", "W09B", "W09E", "W0A0", "W0A1", "W0BB", "W0BC"]
-UNALLOWED_NODES_SET = set(UNALLOWED_NODES).lower()
+    # Urban nodes fetched from https://auth.sagecontinuum.org/api/v-beta/nodes/
+    # VSNs excluded that contain "Urban" in the focus field (focus="Urban")
+    # Also includes N001, V012, W031, W0BB, W0BC (not marked as Urban but excluded since they may be urban)
+    UNALLOWED_NODES = [
+        "N001", "V012", "V027", "V028", "V042", "W015", "W019", "W01C", "W01E",
+        "W022", "W023", "W024", "W026", "W027", "W028", "W029", "W02B", "W02C",
+        "W02D", "W02E", "W02F", "W031", "W040", "W042", "W044", "W045", "W046",
+        "W047", "W048", "W049", "W04A", "W04B", "W04C", "W04D", "W04E", "W04F",
+        "W050", "W051", "W052", "W053", "W054", "W055", "W056", "W059", "W05A",
+        "W05B", "W05C", "W05D", "W05E", "W05F", "W060", "W061", "W062", "W063",
+        "W064", "W065", "W066", "W068", "W06B", "W06D", "W06E", "W071", "W072",
+        "W073", "W074", "W075", "W076", "W077", "W078", "W079", "W07A", "W07B",
+        "W07C", "W07D", "W07E", "W07F", "W080", "W081", "W082", "W085", "W086",
+        "W087", "W088", "W089", "W08A", "W08B", "W08D", "W08E", "W08F", "W090",
+        "W091", "W092", "W093", "W094", "W095", "W096", "W098", "W099", "W09A",
+        "W09B", "W09C", "W09D", "W09E", "W09F", "W0A0", "W0A1", "W0A2", "W0A3",
+        "W0A4", "W0A5", "W0AB", "W0AD", "W0BB", "W0BC", "W0BD", "W0BF"
+    ]
+UNALLOWED_NODES_SET = set(vsn.lower() for vsn in UNALLOWED_NODES)
 
 # Image task types to query
 IMAGE_TASKS = "imagesampler-.*"
@@ -207,7 +225,7 @@ def query_sage_images(time_slots: list[tuple[str, str]]) -> pd.DataFrame:
             
             # Remove urban nodes
             logger.info(f"Found {len(df)} images for time slot: {slot_start} to {slot_end}")
-            df = df[~df['meta.vsn'].apply(lambda x: x.strip().lower() not in UNALLOWED_NODES_SET)]
+            df = df[df['meta.vsn'].apply(lambda x: x.strip().lower() not in UNALLOWED_NODES_SET)]
             if len(df) <= 0:
                 logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after removing urban nodes")
                 continue
