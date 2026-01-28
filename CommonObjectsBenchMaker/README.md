@@ -264,3 +264,23 @@ The dataset card and annotations are provided under CC BY 4.0. Individual images
 We thank the creators and maintainers of:
 - COCO Dataset
 - Sage Continuum
+
+
+
+# NOTES TO SELF
+>NOTE: later organize these note into the README.md file
+
+- the split of coco and sage is a 70/30 split initially, with majority of the images coming from coco
+    - the reason for this is because coco has more images and is more diverse, but sage has more images from the real world but less diverse
+    - Although this can shift once the queries are generated
+- the time frame start date in get_sage.py was calcualted by adding 2 years to the "start of sage" date
+- the time frame end date in get_sage.py was calculated by subtracting 1 week from the current date
+    - 1 week is to avoid running into errors with images not being available yet because of the delay in the data being processed by Sage.
+- the time slot configuration in get_sage.py is calculated based on the total number of days between the start and end date, and then choosing around 1 time slot per week, but capping to a reasonable number for distributed sampling.
+    - Scales with time range: longer ranges get more slots
+    - Ensures a minimum: at least 20 slots for short ranges
+    - Caps the maximum: avoids too many queries
+    - Distributes sampling: random slots across the range improve temporal diversity
+- VSN list in get_sage.py is set to None to query all available VSNs, BUT the urban nodes are included so the dataset will need to be private.
+    - two datasets will be created, one private and one public. The private dataset will include the urban nodes, but the public dataset will not.
+- Note that the top camera images are removed from the dataset because they are not relevant to the benchmark. They generally show the sky with no objects in the frame.
