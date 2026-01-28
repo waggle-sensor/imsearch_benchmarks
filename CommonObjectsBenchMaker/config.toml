@@ -130,8 +130,9 @@ Tagging rules:
 - Avoid redundant near-duplicates; pick the most specific tag."""
 user_prompt = """Analyze the image and output JSON with:
 - summary: <= 30 words, factual, no speculation
+- viewpoint, lighting, environment_type
 - tags: choose 12-18 tags ONLY from the provided enum list for the tags field
-- confidence: 0..1 per field"""
+- confidence: 0..1 per field (viewpoint, lighting, environment_type)"""
 max_output_tokens = 4000
 reasoning_effort = "low"
 image_detail = "low"  # "low" saves tokens
