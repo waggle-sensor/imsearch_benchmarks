@@ -47,8 +47,8 @@ NUM_TIME_SLOTS = min(max(total_days // 7, 20), 360)  # e.g., 1 per week, min 20,
 TIME_SLOT_DURATION_HOURS = 0.5  # Duration of each time slot in hours
 
 # VSN configuration
-URBAN_IMAGERY = os.getenv("URBAN_IMAGERY", "false").lower()
-if URBAN_IMAGERY == "true":
+SAGE_URBAN_IMAGERY = os.getenv("SAGE_URBAN_IMAGERY", "false").lower()
+if SAGE_URBAN_IMAGERY == "true":
     UNALLOWED_NODES = []
 else:
     UNALLOWED_NODES = ["W042", "N001", "V012", "W015", "W01C", "W01E", "W024", "W026", "W02C", "W02D", "W02E", "W02F", "W031", "W040", "W046", "W047", "W048", "W049", "W04A", "W051", "W055", "W059", "W05A", "W05B", "W05C", "W05D", "W05E", "W05F", "W060", "W061", "W062", "W063", "W064", "W065", "W066", "W06E", "W072", "W073", "W074", "W075", "W076", "W077", "W078", "W079", "W07A", "W07B", "W07D", "W07E", "W07F", "W080", "W081", "W086", "W088", "W089", "W08A", "W08B", "W08D", "W08E", "W08F", "W090", "W091", "W092", "W094", "W096", "W099", "W09B", "W09E", "W0A0", "W0A1", "W0BB", "W0BC"]
@@ -243,7 +243,7 @@ def main():
     logger.info(f"Using random seed: {RANDOM_SEED}")
     
     # Determine VSN list
-    if URBAN_IMAGERY == "true":
+    if SAGE_URBAN_IMAGERY == "true":
         logger.info("Urban imagery is enabled, urban VSNs will be queried...")
     else:
         logger.info("Urban imagery is disabled, no urban VSNs will be queried...")
