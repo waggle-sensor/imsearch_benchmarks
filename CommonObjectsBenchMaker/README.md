@@ -13,7 +13,10 @@ The dataset is designed to test retrieval systems' ability to:
 - Handle diverse scenes, objects, and environments
 - Support general-purpose image retrieval research
 
-**Final Dataset**: [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench)
+**Final Public Dataset**: [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench)
+**Final Private Dataset**: [CommonObjectsBench-private on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench-private)
+
+>NOTE: The private dataset includes imagery from urban sage nodes, which are not allowed in the public dataset. Please be careful when using the private dataset as the urban images are not allowed to be public.
 
 ## Pipeline Architecture
 
