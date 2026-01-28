@@ -55,7 +55,67 @@ query_plan_candidate_image_ids_column = "candidate_image_ids"
 
 # Hugging Face configuration (sensitive fields use _ prefix)
 _hf_repo_id = "sagecontinuum/CommonObjectsBench"
-_hf_private = false
+_hf_private = true
+
+# Boolean columns
+columns_boolean = [
+    "urban_scene",          # True if the image is an urban scene
+    "rural_scene",          # True if the image is a rural scene
+    "outdoor_scene",        # True if the image is an outdoor scene
+    "vehicle_present",      # True if a vehicle appears in the image
+    "person_present",       # True if a person appears in the image
+    "animal_present",       # True if an animal appears in the image
+    "food_present",         # True if food is visible in the image
+    "text_visible",         # True if readable text is present in the image
+    "multiple_objects",     # True if more than one distinct object category is present
+    "artificial_lighting",  # True if the main lighting is artificial
+    "occlusion_present"     # True if the main subject is partially occluded
+]
+
+# Taxonomy columns (locked taxonomy for FireBench)
+[columns_taxonomy]
+viewpoint = [
+    "eye_level",        # Typical human perspective
+    "overhead",         # From above, e.g., drone, surveillance camera
+    "close_up",         # Object fills most of frame
+    "distant",          # Object small/far in frame
+    "street_view",      # Facing along or across a street/sidewalk
+    "top_down",         # Looking straight down
+    "oblique",          # Angled view
+    "side_view",        # Taken from the side
+    "first_person",     # Egocentric, wearable camera
+    "skyward",          # Camera pointed toward the sky
+    "other",            # Other viewpoint
+    "unknown"           # Not possible to determine
+]
+lighting = [
+    "day",           # Sunlit or daylight scenes
+    "night",         # Low light, dark, artificial light
+    "dusk",          # Twilight, sunset, sunrise
+    "indoor",        # Artificial/indoor lighting
+    "shadow",        # Dominated by shadow
+    "bright",        # High brightness, strong sunlight
+    "backlit",       # Subject in shadow, background bright
+    "mixed",         # Mixed/ambiguous lighting
+    "other",         # Other lighting
+    "unknown"        # Not possible to determine
+]
+environment_type = [
+    "indoor",         # Inside a building or structure
+    "outdoor",        # Outside a building or structure
+    "urban",          # City or urban area
+    "suburban",       # Suburban area
+    "rural",          # Rural area
+    "residential",    # Residential area
+    "commercial",     # Commercial area
+    "industrial",     # Industrial area
+    "recreational",   # Recreational area
+    "natural",        # Natural area
+    "park",           # Park or green space
+    "beach",          # Beach or coastal area
+    "other",          # Other environment
+    "unknown"         # Not possible to determine
+]
 
 # Vision adapter configuration (OpenAI)
 [vision_config]
@@ -63,8 +123,10 @@ adapter = "openai"
 model = "gpt-5-mini"
 system_prompt = """You are labeling images for a general object retrieval benchmark.
 Output MUST be valid JSON matching the schema. Do not include extra keys.
+Use the allowed taxonomy values exactly.
+Be conservative: if unsure, choose 'unknown'.
 Tagging rules:
-- Prefer tags that help retrieval and describe common objects and scenes.
+- Prefer tags that help retrieval, describe common objects and scenes, and help with false-positive analysis.
 - Avoid redundant near-duplicates; pick the most specific tag."""
 user_prompt = """Analyze the image and output JSON with:
 - summary: <= 30 words, factual, no speculation
@@ -89,23 +151,38 @@ price_per_million_image_output_tokens = 1.00  # Image output tokens
 min_tags = 14
 max_tags = 25
 controlled_tag_vocab = [
-    # --- Common objects ---
-    "person", "people", "child", "adult", "animal", "dog", "cat", "bird", "horse", "cow",
-    "vehicle", "car", "truck", "bus", "motorcycle", "bicycle", "airplane", "boat", "train",
-    "furniture", "chair", "table", "bed", "sofa", "desk",
-    "electronics", "phone", "computer", "laptop", "television", "camera",
-    "food", "fruit", "vegetable", "bread", "meat", "drink", "bottle", "cup", "plate", "bowl",
-    "clothing", "shirt", "pants", "shoes", "hat", "bag",
-    "sports", "ball", "racket", "bicycle", "skateboard",
-    "building", "house", "office", "store", "school", "church",
-    "nature", "tree", "flower", "grass", "sky", "cloud", "sun", "moon", "star",
-    "water", "ocean", "lake", "river", "beach", "mountain", "hill", "valley",
-    "indoor", "outdoor", "urban", "rural", "suburban",
-    "day", "night", "sunny", "cloudy", "rainy", "snowy",
-    "close_up", "mid_range", "far_range", "wide_angle", "telephoto",
-    "portrait", "landscape", "still_life", "action", "group",
+    # --- Common objects & people ---
+    "person", "people", "man", "woman", "child", "adult", "group",
+    # --- Animals ---
+    "animal", "dog", "cat", "bird", "horse", "cow", "sheep", "goat", "chicken", "duck", "fish", "insect", "reptile", "amphibian", "mammal", "bird",
+    # --- Vehicles ---
+    "vehicle", "car", "truck", "bus", "motorcycle", "bicycle", "scooter", "airplane", "boat", "train",
+    # --- Furniture & household objects ---
+    "furniture", "chair", "table", "bed", "sofa", "desk", "cabinet", "shelf",
+    # --- Electronics & devices ---
+    "electronics", "phone", "computer", "laptop", "tablet", "television", "camera", "remote", "light",
+    # --- Food & drink ---
+    "food", "fruit", "apple", "banana", "orange", "vegetable", "carrot", "broccoli", "bread", "meat", "egg",
+    "drink", "water_bottle", "cup", "plate", "bowl", "mug",
+    # --- Clothing & accessories ---
+    "clothing", "shirt", "pants", "dress", "shoes", "hat", "bag", "backpack", "jacket", "coat", "glasses",
+    # --- Sports & recreation ---
+    "sports", "ball", "racket", "bat", "bicycle", "skateboard", "helmet",
+    # --- Buildings & structures ---
+    "building", "house", "apartment", "office", "store", "school", "church", "hospital", "skyscraper", "bridge",
+    "road", "street", "avenue", "alley", "lane", "path", "parking_lot", "parking_garage", "traffic_sign", "traffic_light",
+    # --- Nature, landscape, & weather ---
+    "nature", "tree", "flower", "plant", "grass", "bush", "field", "sky", "cloud", "sun", "moon", "star",
+    "water", "ocean", "lake", "river", "pond", "beach", "mountain", "hill", "valley", "forest", "desert", "park",
+    "snow", "ice", "rock", "sand",
+    # --- Location & environment ---
+    "indoor", "outdoor", "urban", "suburban", "rural", "residential", "commercial", "industrial", "recreational", "natural", "beach", "park",
+    # --- Scene descriptors ---
+    "day", "night", "sunny", "cloudy", "rainy", "snowy", "foggy", "windy",
+    "close_up", "medium_shot", "wide_shot", "aerial_view",
+    "portrait", "landscape", "action", "group",
     "colorful", "monochrome", "bright", "dark", "high_contrast", "low_contrast",
-    "sharp", "blurry", "motion_blur", "clear", "detailed",
+    "sharp", "blurry", "motion_blur", "clear", "detailed", "busy_background",
 ]
 
 # Judge adapter configuration (OpenAI)
