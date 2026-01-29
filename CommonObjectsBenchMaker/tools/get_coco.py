@@ -2,7 +2,7 @@
 """
 get_coco.py
 
-Download images from the COCO dataset using FiftyOne for the CommonObjectsBench benchmark.
+Download images from the COCO 2017 dataset using FiftyOne for the CommonObjectsBench benchmark.
 Supports configurable class filtering and random sampling.
 """
 import os
@@ -39,7 +39,7 @@ COCO_CLASSES = [
 MAX_SAMPLES = 5320  # Set to a number to limit total samples (e.g., 1000)
 
 # Output configuration
-OUTPUT_DIR = "/tmp/CommonObjectsBenchMaker/images/coco"
+OUTPUT_DIR = "/tmp/CommonObjectsBench/images/coco_2017"
 RANDOM_SEED = 42
 MAX_WORKERS = 10
 
@@ -72,7 +72,7 @@ def get_coco_images(classes, split=COCO_SPLIT, max_samples=None, random_seed=RAN
         dataset = foz.load_zoo_dataset(
             "coco-2017",
             split=split,
-            label_types=["detections", "captions"],
+            label_types=["detections"],
             classes=classes,
             max_samples=max_samples,
         )
