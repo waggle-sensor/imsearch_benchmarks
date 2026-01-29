@@ -202,28 +202,48 @@ def generate_random_time_slots(start_str, end_str, num_slots, duration_hours, ra
     
     return slots
 
-def check_url_accessible(url, auth, timeout=5):
-    """Check if a URL is accessible and returns a valid response."""
+def check_url_accessible(url, auth, timeout=10):
+    """Check if a URL is accessible and returns a valid image file."""
     try:
+        # First check if URL is accessible with HEAD request
         response = requests.head(url, auth=auth, timeout=timeout, allow_redirects=True)
-        # Accept 200 (OK) or 302 (redirect) status codes
-        return response.status_code in [200, 302]
-    except Exception:
-        # If HEAD fails, try GET with stream=True (only read headers)
-        try:
-            response = requests.get(url, auth=auth, timeout=timeout, stream=True)
-            return response.status_code == 200
-        except Exception:
+        if response.status_code not in [200, 302]:
             return False
+        
+        # Now verify it's actually a valid image by downloading first few KB
+        # Use stream=True to avoid downloading the entire file
+        response = requests.get(url, auth=auth, timeout=timeout, stream=True)
+        if response.status_code != 200:
+            return False
+        
+        # Read first 32KB to verify it's an image (enough for PIL to identify format)
+        chunk_size = 32768
+        content_chunk = b''
+        for chunk in response.iter_content(chunk_size=chunk_size):
+            content_chunk += chunk
+            if len(content_chunk) >= chunk_size:
+                break
+        
+        # Try to open with PIL to verify it's a valid image
+        try:
+            image = Image.open(BytesIO(content_chunk))
+            image.verify()  # Verify it's actually an image
+            return True
+        except Exception:
+            # Not a valid image format
+            return False
+            
+    except Exception:
+        return False
 
 def filter_accessible_urls(df, auth):
-    """Filter dataframe to keep only rows with accessible URLs."""
+    """Filter dataframe to keep only rows with accessible URLs that are valid images."""
     if 'value' not in df.columns:
         logger.warning("No 'value' column found in dataframe, skipping URL validation")
         return df
     
     original_count = len(df)
-    logger.info(f"Checking URL accessibility for {original_count} images...")
+    logger.info(f"Validating URLs and image format for {original_count} images...")
     
     # Check URLs in parallel for efficiency
     valid_indices = []
@@ -238,7 +258,7 @@ def filter_accessible_urls(df, auth):
     
     df_filtered = df.loc[valid_indices]
     removed_count = original_count - len(df_filtered)
-    logger.info(f"Found {len(df_filtered)} images with accessible URLs (removed {removed_count} inaccessible)")
+    logger.info(f"Found {len(df_filtered)} images with accessible and valid image URLs (removed {removed_count} invalid/inaccessible)")
     
     return df_filtered
 
