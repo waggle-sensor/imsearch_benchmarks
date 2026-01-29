@@ -1,3 +1,3 @@
-imsearch_benchmaker[openai] @ git+https://github.com/waggle-sensor/imsearch_benchmaker@0.1.3
-imsearch_benchmaker[local] @ git+https://github.com/waggle-sensor/imsearch_benchmaker@0.1.3
+imsearch_benchmaker[openai] @ git+https://github.com/waggle-sensor/imsearch_benchmaker@0.1.4
+imsearch_benchmaker[local] @ git+https://github.com/waggle-sensor/imsearch_benchmaker@0.1.4
 
