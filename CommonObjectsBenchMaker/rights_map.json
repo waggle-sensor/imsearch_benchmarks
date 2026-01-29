@@ -5,14 +5,16 @@
   },
   "prefixes": [
     {
-      "prefix": "coco/",
+      "prefix": "coco_2017/",
       "license": "CC BY 4.0",
-      "doi": "10.48550/arXiv.1405.0312"
+      "doi": "10.48550/arXiv.1405.0312",
+      "dataset_name": "COCO 2017"
     },
     {
       "prefix": "sage/",
       "license": "UNKNOWN",
-      "doi": "10.1109/ICSENS.2016.7808975"
+      "doi": "10.1109/ICSENS.2016.7808975",
+      "dataset_name": "Sage Continuum"
     }
   ]
 }
