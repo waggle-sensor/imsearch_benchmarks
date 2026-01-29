@@ -53,3 +53,7 @@ To add a new benchmark:
 3. Add data collection tools if needed
 4. Create a README.md documenting your benchmark
 5. If needed, add a new adapter for your benchmark
+
+## imsearch_benchmarks + imsearch_eval + imsearch_benchmaker
+
+You can use [imsearch_benchmarks](https://github.com/waggle-sensor/imsearch_benchmarks) with [imsearch_eval](https://github.com/waggle-sensor/imsearch_eval) to provide imsearch_eval with a set of benchmarks to evaluate the performance of the image search system. If you need to create a new benchmark, you can use the [imsearch_benchmaker](https://github.com/waggle-sensor/imsearch_benchmaker) framework to create a new benchmark.
