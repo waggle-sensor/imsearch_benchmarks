@@ -18,6 +18,24 @@ The dataset is designed to test retrieval systems' ability to:
 
 >NOTE: The private dataset includes imagery from urban sage nodes, which are not allowed in the public dataset. Please be careful when using the private dataset as the urban images are not allowed to be public.
 
+## Directory Structure
+```
+CommonObjectsBenchMaker/
+├── public/
+├── private/
+├── tools/
+└── README.md
+└── requirements.txt
+└── rights_map.json
+```
+
+The `public/` directory contains the configuration and dataset card for the public dataset.
+The `private/` directory contains the configuration and dataset card for the private dataset.
+The `tools/` directory contains the tools used to collect the images.
+The `README.md` file contains the README for the repository.
+The `requirements.txt` file contains the requirements for the pipeline.
+The `rights_map.json` file contains the rights map for the dataset.
+
 ## Pipeline Architecture
 
 CommonObjectsBenchMaker uses the [imsearch_benchmaker](https://github.com/waggle-sensor/imsearch_benchmaker) framework to create the CommonObjectsBench dataset through a 7-step pipeline.

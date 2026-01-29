@@ -16,6 +16,26 @@ The dataset is designed to test retrieval systems' ability to:
 
 **Final Dataset**: [FireBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/FireBench)
 
+## Directory Structure
+```
+FireBenchMaker/
+├── tools/
+├── config.toml
+├── README.md
+├── dataset_card.md
+├── env.template
+└── requirements.txt
+└──rights_map.json
+```
+
+The `tools/` directory contains the tools used to collect the images.
+The `config.toml` file contains the configuration for the pipeline.
+The `README.md` file contains the README for the repository.
+The `dataset_card.md` file contains the dataset card for the dataset.
+The `env.template` file contains the environment template for the pipeline.
+The `requirements.txt` file contains the requirements for the pipeline.
+The `rights_map.json` file contains the rights map for the dataset.
+
 ## Pipeline Architecture
 
 FireBenchMaker uses the [imsearch_benchmaker](https://github.com/waggle-sensor/imsearch_benchmaker) framework to create the FireBench dataset through a 7-step pipeline.
