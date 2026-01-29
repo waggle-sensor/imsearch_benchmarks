@@ -231,7 +231,7 @@ def query_sage_images(time_slots: list[tuple[str, str]]) -> pd.DataFrame:
                 continue
             
             # Remove top camera images
-            df = df[~df['meta.task'].apply(lambda x: x.strip().lower() != "imagesampler-top")]
+            df = df[df['meta.task'].apply(lambda x: x.strip().lower() != "imagesampler-top")]
             if len(df) <= 0:
                 logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after removing top camera images")
                 continue
