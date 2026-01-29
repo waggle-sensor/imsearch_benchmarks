@@ -79,7 +79,7 @@ IMAGE_TASKS = "imagesampler-.*"
 SAMPLE_SIZE = 2280  # Total number of images to sample
 
 # Output configuration
-OUTPUT_DIR = "/tmp/CommonObjectsBenchMaker/images/sage"
+OUTPUT_DIR = "/tmp/CommonObjectsBench/images/sage"
 RANDOM_SEED = 42
 
 def download_image(session, image_url, filepath, auth):
