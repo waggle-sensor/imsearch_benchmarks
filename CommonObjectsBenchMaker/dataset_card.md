@@ -61,7 +61,7 @@ CommonObjectsBench is a benchmark dataset for evaluating image retrieval systems
 
 CommonObjectsBench contains:
 - **Queries**: Natural language queries describing common objects and scenes
-- **Images**: Real-world imagery from multiple sources (COCO dataset, Sage Continuum)
+- **Images**: Real-world imagery from multiple sources (COCO 2017 dataset, Sage Continuum)
 - **Relevance Labels**: Binary labels (0 = not relevant, 1 = relevant) for each query-image pair
 - **Rich Metadata**: Comprehensive annotations including object descriptions, scene characteristics, and more
 - **CLIPScore**: Pre-computed CLIP similarity scores for each query-image pair using apple/DFN5B-CLIP-ViT-H-14-378 model.
@@ -94,7 +94,7 @@ Each instance in the dataset contains:
 {
     "query_id": "commonobjectsbench_q001",
     "query_text": "A person riding a bicycle on a sunny day",
-    "image_id": "coco/train2017/000000000139.jpg",
+    "image_id": "coco_2017/train2017/000000000139.jpg",
     "relevance_label": 1,
     "image": <PIL.Image.Image>,  # The actual image
     "license": "CC BY 4.0",
