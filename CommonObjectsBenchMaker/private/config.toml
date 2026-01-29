@@ -1,0 +1,223 @@
+# CommonObjectsBenchMaker Configuration
+# This config file maps CommonObjectsBenchMaker settings to the imsearch_benchmaker framework
+
+# log level
+log_level = "INFO"
+
+#dataset description
+benchmark_name = "CommonObjectsBench-private"
+benchmark_description = "A benchmark for general object image retrieval"
+benchmark_author = "Francisco Lozano"
+benchmark_author_email = "francisco.lozano@northwestern.edu"
+benchmark_author_affiliation = "Northwestern University"
+benchmark_author_orcid = "0009-0003-8823-4046"
+benchmark_author_github = "FranciscoLozCoding"
+
+# Column names (matching CommonObjectsBenchMaker structure)
+column_image = "image"
+column_image_id = "image_id"
+column_mime_type = "mime_type"
+column_license = "license"
+column_doi = "doi"
+column_query = "query_text"
+column_query_id = "query_id"
+column_relevance = "relevance_label"
+column_tags = "tags"
+column_summary = "summary"
+column_confidence = "confidence"
+
+# Image URL configuration
+image_base_url = "https://web.lcrc.anl.gov/public/waggle/datasets/CommonObjectsBench/images"
+image_url_temp_column = "image_url"
+
+# File paths
+image_root_dir = "/tmp/CommonObjectsBench/images"
+meta_json = "/tmp/CommonObjectsBench/images/rights_map.json"
+images_jsonl = "/Volumes/data/inputs/images.jsonl"
+seeds_jsonl = "/Volumes/data/inputs/seeds.jsonl"
+annotations_jsonl = "/Volumes/data/outputs/annotations.jsonl"
+query_plan_jsonl = "/Volumes/data/outputs/query_plan.jsonl"
+qrels_jsonl = "/Volumes/data/outputs/commonobjectsbench_qrels.jsonl"
+qrels_with_score_jsonl = "/Volumes/data/outputs/commonobjectsbench_qrels_with_similarity_score.jsonl"
+summary_output_dir = "/Volumes/data/outputs/summary"
+hf_dataset_dir = "/Volumes/data/outputs/hf_dataset"
+hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchmarks/CommonObjectsBenchMaker/private/dataset_card.md"
+
+# Query planning
+query_plan_num_seeds = 300  # Number of seed images to use for query generation
+query_plan_neg_total = 40
+query_plan_neg_hard = 25
+query_plan_neg_nearmiss = 10
+query_plan_neg_easy = 5
+query_plan_random_seed = 42
+query_plan_seed_image_ids_column = "seed_image_ids"
+query_plan_candidate_image_ids_column = "candidate_image_ids"
+
+# Hugging Face configuration (sensitive fields use _ prefix)
+_hf_repo_id = "sagecontinuum/CommonObjectsBench-private"
+_hf_private = true
+
+# Boolean columns
+columns_boolean = [
+    "urban_scene",          # True if the image is an urban scene
+    "rural_scene",          # True if the image is a rural scene
+    "outdoor_scene",        # True if the image is an outdoor scene
+    "vehicle_present",      # True if a vehicle appears in the image
+    "person_present",       # True if a person appears in the image
+    "animal_present",       # True if an animal appears in the image
+    "food_present",         # True if food is visible in the image
+    "text_visible",         # True if readable text is present in the image
+    "multiple_objects",     # True if more than one distinct object category is present
+    "artificial_lighting",  # True if the main lighting is artificial
+    "occlusion_present"     # True if the main subject is partially occluded
+]
+
+# Taxonomy columns (locked taxonomy for FireBench)
+[columns_taxonomy]
+viewpoint = [
+    "eye_level",        # Typical human perspective
+    "overhead",         # From above, e.g., drone, surveillance camera
+    "close_up",         # Object fills most of frame
+    "distant",          # Object small/far in frame
+    "street_view",      # Facing along or across a street/sidewalk
+    "top_down",         # Looking straight down
+    "oblique",          # Angled view
+    "side_view",        # Taken from the side
+    "first_person",     # Egocentric, wearable camera
+    "skyward",          # Camera pointed toward the sky
+    "other",            # Other viewpoint
+    "unknown"           # Not possible to determine
+]
+lighting = [
+    "day",           # Sunlit or daylight scenes
+    "night",         # Low light, dark, artificial light
+    "dusk",          # Twilight, sunset, sunrise
+    "indoor",        # Artificial/indoor lighting
+    "shadow",        # Dominated by shadow
+    "bright",        # High brightness, strong sunlight
+    "backlit",       # Subject in shadow, background bright
+    "mixed",         # Mixed/ambiguous lighting
+    "other",         # Other lighting
+    "unknown"        # Not possible to determine
+]
+environment_type = [
+    "indoor",         # Inside a building or structure
+    "outdoor",        # Outside a building or structure
+    "urban",          # City or urban area
+    "suburban",       # Suburban area
+    "rural",          # Rural area
+    "residential",    # Residential area
+    "commercial",     # Commercial area
+    "industrial",     # Industrial area
+    "recreational",   # Recreational area
+    "natural",        # Natural area
+    "park",           # Park or green space
+    "beach",          # Beach or coastal area
+    "other",          # Other environment
+    "unknown"         # Not possible to determine
+]
+
+# Vision adapter configuration (OpenAI)
+[vision_config]
+adapter = "openai"
+model = "gpt-5-mini"
+system_prompt = """You are labeling images for a general object retrieval benchmark.
+Output MUST be valid JSON matching the schema. Do not include extra keys.
+Use the allowed taxonomy values exactly.
+Be conservative: if unsure, choose 'unknown'.
+Tagging rules:
+- Prefer tags that help retrieval, describe common objects and scenes, and help with false-positive analysis.
+- Avoid redundant near-duplicates; pick the most specific tag."""
+user_prompt = """Analyze the image and output JSON with:
+- summary: <= 30 words, factual, no speculation
+- viewpoint, lighting, environment_type
+- tags: choose 12-18 tags ONLY from the provided enum list for the tags field
+- confidence: 0..1 per field (viewpoint, lighting, environment_type)"""
+max_output_tokens = 4000
+reasoning_effort = "low"
+image_detail = "low"  # "low" saves tokens
+max_images_per_batch = 900
+max_concurrent_batches = 1
+completion_window = "24h"  # Completion window for the batch
+
+# Pricing configuration (required for cost calculation)
+# Prices are per million tokens. All values must be explicitly set.
+price_per_million_input_tokens = 0.125  # Text input tokens
+price_per_million_output_tokens = 1.00  # Text output tokens
+price_per_million_cached_input_tokens = 0.0125  # Text cached input tokens
+price_per_million_image_input_tokens = 0.125  # Image input tokens
+price_per_million_image_output_tokens = 1.00  # Image output tokens
+
+# Controlled tag vocabulary (general objects and scenes)
+min_tags = 14
+max_tags = 25
+controlled_tag_vocab = [
+    # --- Common objects & people ---
+    "person", "people", "man", "woman", "child", "adult", "group",
+    # --- Animals ---
+    "animal", "dog", "cat", "bird", "horse", "cow", "sheep", "goat", "chicken", "duck", "fish", "insect", "reptile", "amphibian", "mammal", "bird",
+    # --- Vehicles ---
+    "vehicle", "car", "truck", "bus", "motorcycle", "bicycle", "scooter", "airplane", "boat", "train",
+    # --- Furniture & household objects ---
+    "furniture", "chair", "table", "bed", "sofa", "desk", "cabinet", "shelf",
+    # --- Electronics & devices ---
+    "electronics", "phone", "computer", "laptop", "tablet", "television", "camera", "remote", "light",
+    # --- Food & drink ---
+    "food", "fruit", "apple", "banana", "orange", "vegetable", "carrot", "broccoli", "bread", "meat", "egg",
+    "drink", "water_bottle", "cup", "plate", "bowl", "mug",
+    # --- Clothing & accessories ---
+    "clothing", "shirt", "pants", "dress", "shoes", "hat", "bag", "backpack", "jacket", "coat", "glasses",
+    # --- Sports & recreation ---
+    "sports", "ball", "racket", "bat", "bicycle", "skateboard", "helmet",
+    # --- Buildings & structures ---
+    "building", "house", "apartment", "office", "store", "school", "church", "hospital", "skyscraper", "bridge",
+    "road", "street", "avenue", "alley", "lane", "path", "parking_lot", "parking_garage", "traffic_sign", "traffic_light",
+    # --- Nature, landscape, & weather ---
+    "nature", "tree", "flower", "plant", "grass", "bush", "field", "sky", "cloud", "sun", "moon", "star",
+    "water", "ocean", "lake", "river", "pond", "beach", "mountain", "hill", "valley", "forest", "desert", "park",
+    "snow", "ice", "rock", "sand",
+    # --- Location & environment ---
+    "indoor", "outdoor", "urban", "suburban", "rural", "residential", "commercial", "industrial", "recreational", "natural", "beach", "park",
+    # --- Scene descriptors ---
+    "day", "night", "sunny", "cloudy", "rainy", "snowy", "foggy", "windy",
+    "close_up", "medium_shot", "wide_shot", "aerial_view",
+    "portrait", "landscape", "action", "group",
+    "colorful", "monochrome", "bright", "dark", "high_contrast", "low_contrast",
+    "sharp", "blurry", "motion_blur", "clear", "detailed", "busy_background",
+]
+
+# Judge adapter configuration (OpenAI)
+[judge_config]
+adapter = "openai"
+model = "gpt-5-mini"
+system_prompt = """You are creating and judging an image-retrieval benchmark for general objects.
+You will receive a query seed (1-3 seed images described by text) and a list of candidates.
+DO NOT use file names, dataset sources, IDs, or rights info for relevance.
+Judge relevance ONLY from the summaries + metadata provided.
+Output MUST be valid JSON matching the schema.
+Binary relevance only: 1 relevant, 0 not relevant."""
+user_prompt = """Tasks:
+1) Write a realistic query_text (what someone would ask for in a search engine) describing the target objects or scene.
+2) Label each candidate image as relevant (1) or not relevant (0) to that query.
+Be consistent with the query and try to make the query as concise as possible."""
+max_output_tokens = 8000
+reasoning_effort = "medium"
+max_queries_per_batch = 600
+max_candidates = 100
+max_concurrent_batches = 1
+completion_window = "24h"  # Completion window for the batch
+
+# Pricing configuration (required for cost calculation)
+# Prices are per million tokens. All values must be explicitly set.
+price_per_million_input_tokens = 0.125  # Text input tokens 
+price_per_million_output_tokens = 1.00  # Text output tokens
+price_per_million_cached_input_tokens = 0.0125  # Text cached input tokens
+
+# Similarity adapter configuration (CLIP)
+[similarity_config]
+adapter = "local_clip"
+model = "apple/DFN5B-CLIP-ViT-H-14-378"
+col_name = "clip_score"
+device = "cpu"  # Device to run inference on 
+use_safetensors = true  # Use safetensors format for model loading
+

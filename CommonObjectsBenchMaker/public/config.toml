@@ -41,7 +41,7 @@ qrels_jsonl = "/Volumes/data/outputs/commonobjectsbench_qrels.jsonl"
 qrels_with_score_jsonl = "/Volumes/data/outputs/commonobjectsbench_qrels_with_similarity_score.jsonl"
 summary_output_dir = "/Volumes/data/outputs/summary"
 hf_dataset_dir = "/Volumes/data/outputs/hf_dataset"
-hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchmarks/CommonObjectsBenchMaker/dataset_card.md"
+hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchmarks/CommonObjectsBenchMaker/public/dataset_card.md"
 
 # Query planning
 query_plan_num_seeds = 300  # Number of seed images to use for query generation
@@ -55,7 +55,7 @@ query_plan_candidate_image_ids_column = "candidate_image_ids"
 
 # Hugging Face configuration (sensitive fields use _ prefix)
 _hf_repo_id = "sagecontinuum/CommonObjectsBench"
-_hf_private = true
+_hf_private = false
 
 # Boolean columns
 columns_boolean = [

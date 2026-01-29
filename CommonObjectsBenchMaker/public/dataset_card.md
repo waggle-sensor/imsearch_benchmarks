@@ -49,12 +49,11 @@ size_categories:
 - 1K<n<10K
 ---
 
-# CommonObjectsBench-private: A Benchmark Dataset for General Object Image Retrieval
+# CommonObjectsBench: A Benchmark Dataset for General Object Image Retrieval
 
 ## Dataset Description
 
 CommonObjectsBench is a benchmark dataset for evaluating image retrieval systems on general objects and common scenes. The dataset consists of natural language queries paired with images, along with binary relevance labels indicating whether each image is relevant to the query. The dataset is designed to test retrieval systems' ability to find relevant images based on queries describing common objects and scenes.
->NOTE: This is the private version of the dataset, so urban images are included. The public version is available at [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench). The public version does not include urban images. Please be careful when using the private dataset as the urban images are not allowed to be public.
 
 ![Image Sample](summary/random_image_sample.png)
 
@@ -183,6 +182,8 @@ The dataset combines images from two sources:
    - Cyberinfrastructure sensor network imagery
    - DOI: 10.1109/ICSENS.2016.7808975
 
+![Source proportion](summary/dataset_proportion_donuts.png)
+
 ### Annotations
 
 #### Annotation process
@@ -206,7 +207,7 @@ The dataset combines images from two sources:
 
 ### Personal and Sensitive Information
 
-The dataset contains private imagery taken from urban sage nodes. Which means it may contain sensitive information such as personal information, private property, or other sensitive information. Please be careful when using the private dataset as the urban images are not allowed to be public.
+The dataset contains publicly available imagery. No personal information is included.
 
 ## Considerations for Using the Data
 
