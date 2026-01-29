@@ -202,6 +202,46 @@ def generate_random_time_slots(start_str, end_str, num_slots, duration_hours, ra
     
     return slots
 
+def check_url_accessible(url, auth, timeout=5):
+    """Check if a URL is accessible and returns a valid response."""
+    try:
+        response = requests.head(url, auth=auth, timeout=timeout, allow_redirects=True)
+        # Accept 200 (OK) or 302 (redirect) status codes
+        return response.status_code in [200, 302]
+    except Exception:
+        # If HEAD fails, try GET with stream=True (only read headers)
+        try:
+            response = requests.get(url, auth=auth, timeout=timeout, stream=True)
+            return response.status_code == 200
+        except Exception:
+            return False
+
+def filter_accessible_urls(df, auth):
+    """Filter dataframe to keep only rows with accessible URLs."""
+    if 'value' not in df.columns:
+        logger.warning("No 'value' column found in dataframe, skipping URL validation")
+        return df
+    
+    original_count = len(df)
+    logger.info(f"Checking URL accessibility for {original_count} images...")
+    
+    # Check URLs in parallel for efficiency
+    valid_indices = []
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = {executor.submit(check_url_accessible, row['value'], auth): idx 
+                  for idx, row in df.iterrows()}
+        
+        for future in as_completed(futures):
+            idx = futures[future]
+            if future.result():
+                valid_indices.append(idx)
+    
+    df_filtered = df.loc[valid_indices]
+    removed_count = original_count - len(df_filtered)
+    logger.info(f"Found {len(df_filtered)} images with accessible URLs (removed {removed_count} inaccessible)")
+    
+    return df_filtered
+
 def query_sage_images(time_slots: list[tuple[str, str]]) -> pd.DataFrame:
     """Query Sage images for given time slots."""
 
@@ -234,6 +274,12 @@ def query_sage_images(time_slots: list[tuple[str, str]]) -> pd.DataFrame:
             df = df[df['meta.task'].apply(lambda x: x.strip().lower() != "imagesampler-top")]
             if len(df) <= 0:
                 logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after removing top camera images")
+                continue
+            
+            # Remove images with inaccessible URLs
+            df = filter_accessible_urls(df, auth)
+            if len(df) <= 0:
+                logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after URL validation")
                 continue
             
             all_dfs.append(df)
