@@ -49,11 +49,12 @@ size_categories:
 - 1K<n<10K
 ---
 
-# CommonObjectsBench: A Benchmark Dataset for General Object Image Retrieval
+# CommonObjectsBench-private: A Benchmark Dataset for General Object Image Retrieval
 
 ## Dataset Description
 
 CommonObjectsBench is a benchmark dataset for evaluating image retrieval systems on general objects and common scenes. The dataset consists of natural language queries paired with images, along with binary relevance labels indicating whether each image is relevant to the query. The dataset is designed to test retrieval systems' ability to find relevant images based on queries describing common objects and scenes.
+>NOTE: This is the private version of the dataset, so urban images are included. The public version is available at [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench). The public version does not include urban images. Please be careful when using the private dataset as the urban images are not allowed to be public.
 
 ![Image Sample](summary/random_image_sample.png)
 
@@ -99,9 +100,27 @@ Each instance in the dataset contains:
     "image": <PIL.Image.Image>,  # The actual image
     "license": "CC BY 4.0",
     "doi": "UNKNOWN",
+    "dataset_name": "COCO 2017",
     "tags": ["person", "bicycle", "outdoor", "day", "sunny", ...],
+    "viewpoint": "eye_level",
+    "lighting": "day",
+    "environment_type": "urban",
+    "multiple_objects": false,
+    "artificial_lighting": false,
+    "occlusion_present": false,
+    "text_visible": false,
+    "person_present": true,
+    "animal_present": false,
+    "food_present": false,
+    "urban_scene": true,
+    "rural_scene": false,
+    "outdoor_scene": true,
+    "vehicle_present": false,
     "confidence": {
-        "confidence": 0.9
+        "viewpoint": 0.9,
+        "lighting": 0.9,
+        "environment_type": 0.9
+        ...
     },
     "summary": "A person riding a bicycle on a sunny day in an urban setting.",
     "clip_score": 5.337447166442871
@@ -117,6 +136,21 @@ Each instance in the dataset contains:
 - **image** (Image): The actual image file
 - **license** (string): License information for the image (e.g., "CC BY 4.0")
 - **doi** (string): Digital Object Identifier for the source dataset
+- **dataset_name** (string): Name of the source dataset (e.g., "COCO 2017", "Sage Continuum")
+- **viewpoint** (string): Camera viewpoint (e.g., "eye_level", "overhead", "close_up", "distant", "street_view", "top_down", "oblique", "side_view", "first_person", "skyward", "other", "unknown")
+- **lighting** (string): Lighting conditions (e.g., "day", "night", "dusk", "indoor", "shadow", "bright", "backlit", "mixed", "other", "unknown")
+- **environment_type** (string): Type of environment (e.g., "indoor", "outdoor", "urban", "suburban", "rural", "residential", "commercial", "industrial", "recreational", "natural", "park", "beach", "other", "unknown")
+- **multiple_objects** (bool): Whether more than one distinct object category is present
+- **artificial_lighting** (bool): Whether the main lighting is artificial
+- **occlusion_present** (bool): Whether the main subject is partially occluded
+- **text_visible** (bool): Whether readable text is present in the image
+- **person_present** (bool): Whether a person is present in the image
+- **animal_present** (bool): Whether an animal is present in the image
+- **food_present** (bool): Whether food is present in the image
+- **urban_scene** (bool): Whether the image is an urban scene
+- **rural_scene** (bool): Whether the image is a rural scene
+- **outdoor_scene** (bool): Whether the image is an outdoor scene
+- **vehicle_present** (bool): Whether a vehicle is present in the image
 - **tags** (list of strings): Controlled vocabulary tags describing the image (12-18 tags per image)
 - **confidence** (dict): Confidence scores (0-1) for annotations
 - **summary** (string): Brief factual summary of the image (≤30 words)
@@ -172,7 +206,7 @@ The dataset combines images from two sources:
 
 ### Personal and Sensitive Information
 
-The dataset contains only publicly available imagery. No personal information is included.
+The dataset contains private imagery taken from urban sage nodes. Which means it may contain sensitive information such as personal information, private property, or other sensitive information. Please be careful when using the private dataset as the urban images are not allowed to be public.
 
 ## Considerations for Using the Data
 
