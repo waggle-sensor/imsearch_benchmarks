@@ -275,6 +275,13 @@ def query_sage_images(time_slots: list[tuple[str, str]]) -> pd.DataFrame:
             if len(df) <= 0:
                 logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after removing top camera images")
                 continue
+
+            # Remove non-image files (only keep files with common image extensions in 'value')
+            pil_valid_extensions = ('.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tif', '.tiff', '.webp')
+            df = df[df['value'].str.lower().str.endswith(pil_valid_extensions)]
+            if len(df) <= 0:
+                logger.warning(f"No images found for time slot: {slot_start} to {slot_end} after removing non-image files")
+                continue
             
             # Remove images with inaccessible URLs
             df = filter_accessible_urls(df, auth)
