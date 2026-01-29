@@ -88,9 +88,9 @@ Raw Images
 
 CommonObjectsBenchMaker includes tools to collect images from two sources:
 
-### 1. COCO Dataset
+### 1. COCO 2017 Dataset
 
-Downloads images from the COCO (Common Objects in Context) dataset using FiftyOne.
+Downloads images from the COCO (Common Objects in Context) 2017 dataset using FiftyOne.
 
 ```bash
 python tools/get_coco.py
@@ -99,7 +99,7 @@ python tools/get_coco.py
 **Configuration** (in script):
 - COCO classes: Configurable list (default: all 80 COCO classes)
 - Sample size per class: Configurable
-- Output directory: `/tmp/CommonObjectsBenchMaker/images/coco`
+- Output directory: `/tmp/CommonObjectsBench/images/coco_2017`
 - Random seed: 42
 
 ### 2. Sage Continuum
