@@ -31,8 +31,8 @@ image_base_url = "https://web.lcrc.anl.gov/public/waggle/datasets/CommonObjectsB
 image_url_temp_column = "image_url"
 
 # File paths
-image_root_dir = "/tmp/CommonObjectsBenchMaker/images"
-meta_json = "/tmp/CommonObjectsBenchMaker/images/rights_map.json"
+image_root_dir = "/tmp/CommonObjectsBench/images"
+meta_json = "/tmp/CommonObjectsBench/images/rights_map.json"
 images_jsonl = "/Volumes/data/inputs/images.jsonl"
 seeds_jsonl = "/Volumes/data/inputs/seeds.jsonl"
 annotations_jsonl = "/Volumes/data/outputs/annotations.jsonl"
