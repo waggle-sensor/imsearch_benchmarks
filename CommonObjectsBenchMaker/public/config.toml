@@ -137,7 +137,6 @@ max_output_tokens = 4000
 reasoning_effort = "low"
 image_detail = "low"  # "low" saves tokens
 max_images_per_batch = 900
-max_concurrent_batches = 3
 completion_window = "24h"  # Completion window for the batch
 
 # Pricing configuration (required for cost calculation)
