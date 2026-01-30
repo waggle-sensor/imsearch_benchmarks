@@ -203,7 +203,6 @@ max_output_tokens = 8000
 reasoning_effort = "medium"
 max_queries_per_batch = 600
 max_candidates = 100
-max_concurrent_batches = 1
 completion_window = "24h"  # Completion window for the batch
 
 # Pricing configuration (required for cost calculation)
