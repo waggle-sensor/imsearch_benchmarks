@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+# NVIDIA PyTorch base image (includes CUDA + a CUDA-enabled torch build)
+FROM nvcr.io/nvidia/pytorch:24.01-py3
 
 # Set working directory
 WORKDIR /app
@@ -16,22 +17,15 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install CUDA-enabled torch stack first (pin versions to satisfy benchmaker)
-# disable if you are not using a GPU
-RUN pip install --no-cache-dir \
-  torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 \
-  --index-url https://download.pytorch.org/whl/cu121
+# keep pip fresh
+RUN python -m pip install --upgrade pip
 
 # Install Python dependencies
-# First install main requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Re-assert CUDA torch in case anything tried to swap it
-# disable if you are not using a GPU
-RUN pip install --no-cache-dir --upgrade --force-reinstall \
-  torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 \
-  --index-url https://download.pytorch.org/whl/cu121
+# Sanity check: make sure we have CUDA-enabled torch in the image
+RUN python -c "import torch; print('torch', torch.__version__); print('cuda', torch.version.cuda); print('is_available', torch.cuda.is_available())"
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
