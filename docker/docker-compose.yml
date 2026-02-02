@@ -9,10 +9,10 @@ services:
     container_name: imsearch_benchmarks
     volumes:
       # Mount data directories
-      - ./volume/config:/app/config
-      - ./volume/data:/app/data
-      - ./volume/inputs:/app/input
-      - ./volume/outputs:/app/output
+      - ./volumes/config:/app/config
+      - ./volumes/data:/app/data
+      - ./volumes/inputs:/app/input
+      - ./volumes/outputs:/app/output
     environment:
       - PYTHONUNBUFFERED=1
       - SAGE_USER=${SAGE_USER:-}
