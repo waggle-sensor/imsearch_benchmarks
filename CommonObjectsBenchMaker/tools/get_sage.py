@@ -68,7 +68,7 @@ else:
         "W087", "W088", "W089", "W08A", "W08B", "W08D", "W08E", "W08F", "W090",
         "W091", "W092", "W093", "W094", "W095", "W096", "W098", "W099", "W09A",
         "W09B", "W09C", "W09D", "W09E", "W09F", "W0A0", "W0A1", "W0A2", "W0A3",
-        "W0A4", "W0A5", "W0AB", "W0AD", "W0BB", "W0BC", "W0BD", "W0BF"
+        "W0A4", "W0A5", "W0AB", "W0AD", "W0BB", "W0BC", "W0BD", "W0BF", "W0AA"
     ]
 UNALLOWED_NODES_SET = set(vsn.lower() for vsn in UNALLOWED_NODES)
 
