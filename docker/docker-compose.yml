@@ -9,6 +9,7 @@ services:
     container_name: imsearch_benchmarks
     volumes:
       # Mount data directories
+      - ./volumes/config:/app/config
       - ./volumes/data:/app/data
       - ./volumes/inputs:/app/input
       - ./volumes/outputs:/app/output
