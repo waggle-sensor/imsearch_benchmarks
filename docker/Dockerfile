@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
 # Install PyTorch with CUDA support first (before other requirements)
 # This ensures CUDA-enabled PyTorch is installed
 # disable if you are not using a GPU
-RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cu121
 
 # Install Python dependencies
 # First install main requirements
