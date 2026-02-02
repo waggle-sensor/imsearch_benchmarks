@@ -31,6 +31,7 @@ For detailed instructions, see the individual benchmark README files.
 ```
 imsearch_benchmarks/
 ├── README.md                 # This file
+├── docker/                   # Docker config to run the pipeline in a container
 ├── FireBenchMaker/          # FireBench benchmark
 │   ├── README.md            # FireBench documentation
 │   ├── config.toml          # Pipeline configuration
