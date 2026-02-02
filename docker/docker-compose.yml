@@ -7,12 +7,13 @@ services:
       dockerfile: Dockerfile
     image: imsearch_benchmarks:latest
     container_name: imsearch_benchmarks
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       # Mount data directories
-      - ./volumes/config:/app/config
-      - ./volumes/data:/app/data
-      - ./volumes/inputs:/app/input
-      - ./volumes/outputs:/app/output
+      - ./volume/config:/app/config
+      - ./volume/data:/app/data
+      - ./volume/inputs:/app/input
+      - ./volume/outputs:/app/output
     environment:
       - PYTHONUNBUFFERED=1
       - SAGE_USER=${SAGE_USER:-}
