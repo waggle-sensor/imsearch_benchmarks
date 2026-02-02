@@ -14,6 +14,7 @@ services:
       - ./volumes/outputs:/app/output
     environment:
       - PYTHONUNBUFFERED=1
+      - IMSEARCH_BENCHMAKER_CONFIG_PATH=${IMSEARCH_BENCHMAKER_CONFIG_PATH:-}
       - SAGE_USER=${SAGE_USER:-}
       - SAGE_PASSWORD=${SAGE_PASSWORD:-}
       - SAGE_URBAN_IMAGERY=${SAGE_URBAN_IMAGERY:-false}
