@@ -200,6 +200,8 @@ The dataset combines images from two sources:
 
 4. **CLIPScore Calculation**: CLIP similarity scores were computed using a local CLIP model (apple/DFN5B-CLIP-ViT-H-14-378)
 
+>NOTE: You can find the annotations in the [annotations.jsonl](annotations.jsonl) file. Keep in mind that not all images are in the final dataset due to the query planning process, so you will see images in the annotations.jsonl file that are not in the final dataset.
+
 #### Who are the annotators?
 
 - **Vision annotations**: Automated using OpenAI's vision API
