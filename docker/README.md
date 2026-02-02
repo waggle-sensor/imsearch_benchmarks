@@ -25,11 +25,10 @@ docker-compose up
 
 This will start the container and mount the following local directories:
 - `./volumes/config` &rarr; `/app/config`
-- `./volumes/data` &rarr; `/app/data`
 - `./volumes/inputs` &rarr; `/app/input`
 - `./volumes/outputs` &rarr; `/app/output`
 
-You can place configs, datasets, and input files into these folders as needed.
+You can place configs, and input files into these folders as needed.
 
 ### 3. Environment Variables
 
