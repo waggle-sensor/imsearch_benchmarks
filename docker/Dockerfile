@@ -16,16 +16,22 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install CUDA-enabled torch stack first (pin versions to satisfy benchmaker)
+# disable if you are not using a GPU
+RUN pip install --no-cache-dir \
+  torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 \
+  --index-url https://download.pytorch.org/whl/cu121
+
 # Install Python dependencies
 # First install main requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install PyTorch with CUDA support first (before other requirements)
-# This ensures CUDA-enabled PyTorch is installed
+# Re-assert CUDA torch in case anything tried to swap it
 # disable if you are not using a GPU
 RUN pip install --no-cache-dir --upgrade --force-reinstall \
-    torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+  torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 \
+  --index-url https://download.pytorch.org/whl/cu121
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
