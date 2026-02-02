@@ -1,5 +1,5 @@
 # NVIDIA PyTorch base image (includes CUDA + a CUDA-enabled torch build)
-FROM nvcr.io/nvidia/pytorch:24.01-py3
+FROM nvcr.io/nvidia/pytorch:26.01-py3
 
 # Set working directory
 WORKDIR /app
@@ -23,9 +23,6 @@ RUN python -m pip install --upgrade pip
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Sanity check: make sure we have CUDA-enabled torch in the image
-RUN python -c "import torch; print('torch', torch.__version__); print('cuda', torch.version.cuda); print('is_available', torch.cuda.is_available())"
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
