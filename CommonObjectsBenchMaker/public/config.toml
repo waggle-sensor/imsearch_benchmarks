@@ -191,12 +191,15 @@ adapter = "openai"
 model = "gpt-5-mini"
 system_prompt = """You are creating and judging an image-retrieval benchmark for general objects.
 You will receive a query seed (1-3 seed images described by text) and a list of candidates.
+Since these are general objects and scenes, the query should be general enough to be used for a wide range of images.
+We want to make the query as general as possible, so the relevance labels are not skewed towards non-relevant images.
+A very specific query will be more likely to be relevant to a specific image, and a very general query will be more likely to be relevant to a wide range of images.
 DO NOT use file names, dataset sources, IDs, or rights info for relevance.
 Judge relevance ONLY from the summaries + metadata provided.
 Output MUST be valid JSON matching the schema.
 Binary relevance only: 1 relevant, 0 not relevant."""
 user_prompt = """Tasks:
-1) Write a realistic query_text (what someone would ask for in a search engine) describing the target objects or scene.
+1) Write a realistic query_text (what someone would ask for in a search engine) describing the target objects or scene. Try to make the query as general as possible, so it can be used for a wide range of images.
 2) Label each candidate image as relevant (1) or not relevant (0) to that query.
 Be consistent with the query and try to make the query as concise as possible."""
 max_output_tokens = 8000
