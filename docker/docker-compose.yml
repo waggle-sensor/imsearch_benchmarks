@@ -7,7 +7,6 @@ services:
       dockerfile: Dockerfile
     image: imsearch_benchmarks:latest
     container_name: imsearch_benchmarks
-    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       # Mount data directories
       - ./volume/config:/app/config
