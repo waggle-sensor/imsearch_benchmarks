@@ -1,10 +1,18 @@
 # Sage Image Search Benchmarks
 
-This repository contains the code and configuration for creating image retrieval benchmarks for Sage Image Search using the [imsearch_benchmaker](https://github.com/waggle-sensor/imsearch_benchmaker) framework.
+This repository contains the code and configuration for creating image retrieval benchmarks for Sage Image Search using the [imsearch_benchmaker](https://github.com/waggle-sensor/imsearch_benchmaker) framework. It also contains other datasets that we use to benchmark text-to-image retrieval systems in various scientific domains.
 
 ## Overview
 
-This repository provides tools and pipelines to create standardized benchmark datasets for evaluating text-to-image retrieval systems in various scientific domains. Each benchmark follows a consistent pipeline architecture that automates the entire dataset creation process, from raw image collection to publication on Hugging Face.
+This repository provides tools and pipelines to create standardized benchmark datasets for evaluating text-to-image retrieval systems in various scientific domains. Each benchmark follows a consistent pipeline architecture that automates the entire dataset creation process, from raw image collection to publication on Hugging Face. It also contains other datasets that we use to benchmark text-to-image retrieval systems in various scientific domains.
+
+## Datasets
+
+| Dataset | Domain | Description | Final Dataset | Code |
+|---------|--------|-------------|--------------|--------------|
+| FireBench | Fire Science 🔥 | A benchmark dataset for evaluating text-to-image retrieval systems in the domain of fire science. | [FireBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/FireBench) | [FireBenchMaker](FireBenchMaker/) |
+| CommonObjectsBench | General Objects & Scenes 🌍 | A benchmark dataset for evaluating text-to-image retrieval systems on general objects and common scenes. | [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench) | [CommonObjectsBenchMaker](CommonObjectsBenchMaker/) |
+| Inquire | Biology 🌿 | A benchmark dataset for evaluating text-to-image retrieval systems in the domain of biology. | [INQUIRE-Benchmark-small on Hugging Face](https://huggingface.co/datasets/sagecontinuum/INQUIRE-Benchmark-small) | [Inquire](Inquire/) |
 
 ## Framework
 
@@ -23,6 +31,7 @@ For detailed instructions, see the individual benchmark README files.
 ```
 imsearch_benchmarks/
 ├── README.md                 # This file
+├── docker/                   # Docker config to run the pipeline in a container
 ├── FireBenchMaker/          # FireBench benchmark
 │   ├── README.md            # FireBench documentation
 │   ├── config.toml          # Pipeline configuration
@@ -45,3 +54,7 @@ To add a new benchmark:
 3. Add data collection tools if needed
 4. Create a README.md documenting your benchmark
 5. If needed, add a new adapter for your benchmark
+
+## imsearch_benchmarks + imsearch_eval + imsearch_benchmaker
+
+You can use [imsearch_benchmarks](https://github.com/waggle-sensor/imsearch_benchmarks) with [imsearch_eval](https://github.com/waggle-sensor/imsearch_eval) to provide imsearch_eval with a set of benchmarks to evaluate the performance of the image search system. If you need to create a new benchmark, you can use the [imsearch_benchmaker](https://github.com/waggle-sensor/imsearch_benchmaker) framework to create a new benchmark.

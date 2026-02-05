@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  imsearch_benchmarks:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: imsearch_benchmarks:latest
+    container_name: imsearch_benchmarks
+    volumes:
+      # Mount data directories
+      - ./volumes/config:/app/config
+      - ./volumes/inputs:/app/input
+      - ./volumes/outputs:/app/output
+    environment:
+      - PYTHONUNBUFFERED=1
+      - IMSEARCH_BENCHMAKER_CONFIG_PATH=${IMSEARCH_BENCHMAKER_CONFIG_PATH:-}
+      - SAGE_USER=${SAGE_USER:-}
+      - SAGE_PASSWORD=${SAGE_PASSWORD:-}
+      - SAGE_URBAN_IMAGERY=${SAGE_URBAN_IMAGERY:-false}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - HF_TOKEN=${HF_TOKEN:-}
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    stdin_open: true
+    tty: true

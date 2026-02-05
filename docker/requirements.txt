@@ -1,0 +1,2 @@
+imsearch_benchmaker[all] @ git+https://github.com/waggle-sensor/imsearch_benchmaker
+
