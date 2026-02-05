@@ -12,6 +12,7 @@ This repository provides tools and pipelines to create standardized benchmark da
 |---------|--------|-------------|--------------|--------------|
 | FireBench | Fire Science 🔥 | A benchmark dataset for evaluating text-to-image retrieval systems in the domain of fire science. | [FireBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/FireBench) | [FireBenchMaker](FireBenchMaker/) |
 | CommonObjectsBench | General Objects & Scenes 🌍 | A benchmark dataset for evaluating text-to-image retrieval systems on general objects and common scenes. | [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench) | [CommonObjectsBenchMaker](CommonObjectsBenchMaker/) |
+| CloudBench | Nephology(Atmospheric Science) 🌥 | A benchmark dataset for evaluating text-to-image retrieval systems in the domain of Atmospheric Science specifically focused on clouds. | [CloudBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CloudBench) | [CloudBenchMaker](CloudBenchMaker/) |
 | Inquire | Biology 🌿 | A benchmark dataset for evaluating text-to-image retrieval systems in the domain of biology. | [INQUIRE-Benchmark-small on Hugging Face](https://huggingface.co/datasets/sagecontinuum/INQUIRE-Benchmark-small) | [Inquire](Inquire/) |
 
 ## Framework
