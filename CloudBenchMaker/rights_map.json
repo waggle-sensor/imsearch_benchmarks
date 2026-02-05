@@ -1,0 +1,21 @@
+{
+  "default": {
+    "license": "UNKNOWN",
+    "doi": "UNKNOWN"
+  },
+  "prefixes": [
+    {
+      "prefix": "ccsn/",
+      "license": "CC0 1.0",
+      "doi": "10.7910/DVN/CADDPD",
+      "dataset_name": "Cirrus Cumulus Stratus Nimbus (CCSN)"
+    },
+    {
+      "prefix": "sage/",
+      "license": "UNKNOWN",
+      "doi": "10.1109/ICSENS.2016.7808975",
+      "dataset_name": "Sage Continuum"
+    }
+  ]
+}
+
