@@ -9,32 +9,81 @@ dataset_info:
     dtype: string
   - name: relevance_label
     dtype: int64
+  - name: doi
+    dtype: string
   - name: license
     dtype: string
-  - name: doi
+  - name: summary
     dtype: string
   - name: tags
     sequence: string
   - name: confidence
     struct:
-    - name: confidence
-      dtype: float64
-  - name: summary
+      - name: animal_present
+        dtype: float64
+      - name: artificial_lighting
+        dtype: float64
+      - name: environment_type
+        dtype: float64
+      - name: food_present
+        dtype: float64
+      - name: lighting
+        dtype: float64
+      - name: multiple_objects
+        dtype: float64
+      - name: occlusion_present
+        dtype: float64
+      - name: outdoor_scene
+        dtype: float64
+      - name: person_present
+        dtype: float64
+      - name: rural_scene
+        dtype: float64
+      - name: text_visible
+        dtype: float64
+      - name: urban_scene
+        dtype: float64
+      - name: vehicle_present
+        dtype: float64
+      - name: viewpoint
+        dtype: float64
+  - name: urban_scene
+    dtype: bool
+  - name: rural_scene
+    dtype: bool
+  - name: outdoor_scene
+    dtype: bool
+  - name: vehicle_present
+    dtype: bool
+  - name: person_present
+    dtype: bool
+  - name: animal_present
+    dtype: bool
+  - name: food_present
+    dtype: bool
+  - name: text_visible
+    dtype: bool
+  - name: multiple_objects
+    dtype: bool
+  - name: artificial_lighting
+    dtype: bool
+  - name: occlusion_present
+    dtype: bool
+  - name: viewpoint
     dtype: string
+  - name: lighting
+    dtype: string
+  - name: environment_type
+    dtype: string
+  - name: clip_score
+    dtype: float64   
   - name: image
     dtype: image
-  splits:
-  - name: train
-    num_bytes: 0
-    num_examples: 0
-  download_size: 0
-  dataset_size: 0
 configs:
 - config_name: default
   data_files:
   - split: train
     path: data/train-*
-license: cc-by-4.0
 task_categories:
 - image-classification
 language:
@@ -46,7 +95,8 @@ tags:
 - common-objects
 - coco
 size_categories:
-- 1K<n<10K
+- 10K<n<100K
+pretty_name: Common Objects Benchmark
 ---
 
 # CommonObjectsBench-private: A Benchmark Dataset for General Object Image Retrieval
@@ -95,12 +145,11 @@ Each instance in the dataset contains:
 {
     "query_id": "commonobjectsbench_q001",
     "query_text": "A person riding a bicycle on a sunny day",
-    "image_id": "coco_2017/train2017/000000000139.jpg",
+    "image_id": "coco/train2017/000000000139.jpg",
     "relevance_label": 1,
     "image": <PIL.Image.Image>,  # The actual image
     "license": "CC BY 4.0",
     "doi": "UNKNOWN",
-    "dataset_name": "COCO 2017",
     "tags": ["person", "bicycle", "outdoor", "day", "sunny", ...],
     "viewpoint": "eye_level",
     "lighting": "day",
@@ -136,7 +185,6 @@ Each instance in the dataset contains:
 - **image** (Image): The actual image file
 - **license** (string): License information for the image (e.g., "CC BY 4.0")
 - **doi** (string): Digital Object Identifier for the source dataset
-- **dataset_name** (string): Name of the source dataset (e.g., "COCO 2017", "Sage Continuum")
 - **viewpoint** (string): Camera viewpoint (e.g., "eye_level", "overhead", "close_up", "distant", "street_view", "top_down", "oblique", "side_view", "first_person", "skyward", "other", "unknown")
 - **lighting** (string): Lighting conditions (e.g., "day", "night", "dusk", "indoor", "shadow", "bright", "backlit", "mixed", "other", "unknown")
 - **environment_type** (string): Type of environment (e.g., "indoor", "outdoor", "urban", "suburban", "rural", "residential", "commercial", "industrial", "recreational", "natural", "park", "beach", "other", "unknown")
@@ -174,7 +222,7 @@ CommonObjectsBench was created to address the need for a standardized benchmark 
 
 The dataset combines images from two sources:
 
-1. **COCO Dataset** ([COCO](https://cocodataset.org/#home))
+1. **COCO 2017 Dataset** ([COCO](https://cocodataset.org/#home))
    - Large-scale object detection, segmentation, and captioning dataset
    - 80 object categories
    - DOI: 10.48550/arXiv.1405.0312
@@ -248,22 +296,6 @@ Images in the dataset are licensed according to their source:
 
 The dataset card and annotations are provided under CC BY 4.0.
 
-### Citation Information
-
-If you use this dataset, please cite:
-
-```bibtex
-@misc{commonobjectsbench_2026,
-	author       = { Sage Continuum and Francisco Lozano },
-    affiliation  = { Northwestern University },
-	title        = { CommonObjectsBench },
-	year         = 2026,
-	url          = { https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench },
-	doi          = { FILL_IN_DOI }, #TODO: Add DOI
-	publisher    = { Hugging Face }
-}
-```
-
 ### Acknowledgments
 
 We thank the creators and maintainers of:
@@ -272,9 +304,7 @@ We thank the creators and maintainers of:
 
 ## Dataset Statistics
 
-Please refer to the [EDA](summary/commonobjectsbench_eda_analysis.ipynb) in the [summary/](summary/) directory.
-
->TODO: Add EDA python notebook
+Please refer to the [EDA](summary/CommonObjectBench_eda_analysis.ipynb) in the `summary/` directory.
 
 ## Hyperparameters in creating the dataset
 
