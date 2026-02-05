@@ -106,6 +106,14 @@ Raw Images
 
 CommonObjectsBenchMaker includes tools to collect images from two sources:
 
+### Dataset Composition
+
+The dataset uses a **70/30 split** between COCO and Sage images:
+- **COCO (70%)**: Provides more images and greater diversity
+- **Sage (30%)**: Provides real-world imagery with less diversity
+
+> **Note**: This ratio may shift after query generation, as the query planning process selects candidates based on jacard similarity.
+
 ### 1. COCO 2017 Dataset
 
 Downloads images from the COCO (Common Objects in Context) 2017 dataset using FiftyOne.
@@ -117,7 +125,7 @@ python tools/get_coco.py
 **Configuration** (in script):
 - COCO classes: Configurable list (default: all 80 COCO classes)
 - Sample size per class: Configurable
-- Output directory: `/tmp/CommonObjectsBench/images/coco_2017`
+- Output directory: `/tmp/CommonObjectsBench/images/coco`
 - Random seed: 42
 
 ### 2. Sage Continuum
@@ -129,12 +137,23 @@ python tools/get_sage.py
 ```
 
 **Configuration** (in script):
-- Time frame: Configurable start and end dates
-- Number of time slots: Configurable (default: 10)
-- VSN list: Configurable list of VSNs (default: query all available)
-- Sample size: Configurable (default: 1000)
-- Output directory: `/tmp/CommonObjectsBenchMaker/images/sage`
-- Requires Sage credentials
+- **Time frame**: 
+  - Start date: 2 years after the "start of Sage" date
+  - End date: 1 week before the current date (to avoid processing delays)
+- **Time slot configuration**: 
+  - Calculated dynamically based on total days between start and end dates
+  - Approximately 1 time slot per week
+  - Minimum: 20 slots for short ranges
+  - Maximum: Capped to avoid excessive queries
+  - Randomly distributed across the time range for temporal diversity
+- **VSN list**: 
+  - Default: `None` (queries all available VSNs)
+  - Urban nodes are not included by default (see dataset privacy notes below). To include urban nodes, set the `SAGE_URBAN_IMAGERY` environment variable to `true`.
+- **Sample size**: Configurable (default: 1000)
+- **Output directory**: `/tmp/CommonObjectsBenchMaker/images/sage`
+- **Image filtering**: 
+  - Top camera images are automatically excluded (they typically show only sky with no objects)
+- **Requires Sage credentials**
 
 ## Configuration
 
@@ -286,22 +305,34 @@ We thank the creators and maintainers of:
 - COCO Dataset
 - Sage Continuum
 
+## Dataset Privacy and Versions
 
+Two versions of the dataset are created:
 
-# NOTES TO SELF
->NOTE: later organize these note into the README.md file
+1. **CommonObjectsBench-private**: Includes imagery from urban Sage nodes (not allowed in public datasets)
+2. **CommonObjectsBench**: Public version that excludes urban Sage nodes
 
-- the split of coco and sage is a 70/30 split initially, with majority of the images coming from coco
-    - the reason for this is because coco has more images and is more diverse, but sage has more images from the real world but less diverse
-    - Although this can shift once the queries are generated
-- the time frame start date in get_sage.py was calcualted by adding 2 years to the "start of sage" date
-- the time frame end date in get_sage.py was calculated by subtracting 1 week from the current date
-    - 1 week is to avoid running into errors with images not being available yet because of the delay in the data being processed by Sage.
-- the time slot configuration in get_sage.py is calculated based on the total number of days between the start and end date, and then choosing around 1 time slot per week, but capping to a reasonable number for distributed sampling.
-    - Scales with time range: longer ranges get more slots
-    - Ensures a minimum: at least 20 slots for short ranges
-    - Caps the maximum: avoids too many queries
-    - Distributes sampling: random slots across the range improve temporal diversity
-- VSN list in get_sage.py is set to None to query all available VSNs, BUT the urban nodes are included so the dataset will need to be private.
-    - two datasets will be created, one private and one public. The private dataset will include the urban nodes, but the public dataset will not.
-- Note that the top camera images are removed from the dataset because they are not relevant to the benchmark. They generally show the sky with no objects in the frame.
+> **Important**: The private dataset includes urban imagery that cannot be made public. Use with caution and ensure compliance with Sage Continuum data usage policies.
+
+## Dataset Creation Notes
+
+### Known Issues and Data Loss
+
+During dataset creation, some data loss occurred due to various technical issues:
+
+#### CommonObjectsBench-private
+- **Vision Annotation**: Lost 190 images due to max tokens error in the vision model
+  - The model continued returning `\n` or `\r` characters after completing its expected output
+- **Query Planning**: Lost 9 queries because their seed images failed in the vision annotation step
+- **Similarity Postprocessing**: Lost ~22 query/image pairs due to filesystem issues on the image hosting machine
+
+#### CommonObjectsBench (Public)
+- **Vision Annotation**: Lost 152 images due to max tokens error in the vision model
+  - Same issue as private dataset: model returned `\n` or `\r` characters after expected output
+- **Query Planning**: Lost 3 queries because their seed images failed in the vision annotation step
+- **Similarity Postprocessing**: Lost 18 query/image pairs due to filesystem issues on the image hosting machine
+
+### Dataset Characteristics
+
+- **Relevance Distribution**: The relevancy distribution is skewed towards non-relevant images
+  - This is expected because COCO is highly diverse with many images that don't relate to each other
