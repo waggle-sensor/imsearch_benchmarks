@@ -39,7 +39,7 @@ COCO_CLASSES = [
 MAX_SAMPLES = 5320  # Set to a number to limit total samples (e.g., 1000)
 
 # Output configuration
-OUTPUT_DIR = "/tmp/CommonObjectsBench/images/coco_2017"
+OUTPUT_DIR = "/tmp/CommonObjectsBench/images/coco"
 RANDOM_SEED = 42
 MAX_WORKERS = 10
 

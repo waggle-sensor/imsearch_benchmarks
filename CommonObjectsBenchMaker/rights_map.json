@@ -5,7 +5,7 @@
   },
   "prefixes": [
     {
-      "prefix": "coco_2017/",
+      "prefix": "coco/",
       "license": "CC BY 4.0",
       "doi": "10.48550/arXiv.1405.0312",
       "dataset_name": "COCO 2017"
