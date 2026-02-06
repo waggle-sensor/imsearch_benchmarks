@@ -8,7 +8,11 @@ dataset_info:
   - name: image_id
     dtype: string
   - name: relevance_label
-    dtype: int64
+    dtype:
+      class_label:
+        names:
+          - non_relevant
+          - relevant
   - name: doi
     dtype: string
   - name: license
@@ -19,34 +23,34 @@ dataset_info:
     sequence: string
   - name: confidence
     struct:
-      - name: animal_present
-        dtype: float64
-      - name: artificial_lighting
-        dtype: float64
-      - name: environment_type
-        dtype: float64
-      - name: food_present
-        dtype: float64
-      - name: lighting
-        dtype: float64
-      - name: multiple_objects
-        dtype: float64
-      - name: occlusion_present
-        dtype: float64
-      - name: outdoor_scene
-        dtype: float64
-      - name: person_present
-        dtype: float64
-      - name: rural_scene
-        dtype: float64
-      - name: text_visible
-        dtype: float64
-      - name: urban_scene
-        dtype: float64
-      - name: vehicle_present
-        dtype: float64
-      - name: viewpoint
-        dtype: float64
+    - name: animal_present
+      dtype: float64
+    - name: artificial_lighting
+      dtype: float64
+    - name: environment_type
+      dtype: float64
+    - name: food_present
+      dtype: float64
+    - name: lighting
+      dtype: float64
+    - name: multiple_objects
+      dtype: float64
+    - name: occlusion_present
+      dtype: float64
+    - name: outdoor_scene
+      dtype: float64
+    - name: person_present
+      dtype: float64
+    - name: rural_scene
+      dtype: float64
+    - name: text_visible
+      dtype: float64
+    - name: urban_scene
+      dtype: float64
+    - name: vehicle_present
+      dtype: float64
+    - name: viewpoint
+      dtype: float64
   - name: urban_scene
     dtype: bool
   - name: rural_scene
@@ -70,13 +74,55 @@ dataset_info:
   - name: occlusion_present
     dtype: bool
   - name: viewpoint
-    dtype: string
+    dtype:
+      class_label:
+        names:
+          - eye_level
+          - overhead
+          - close_up
+          - distant
+          - street_view
+          - top_down
+          - oblique
+          - side_view
+          - first_person
+          - skyward
+          - other
+          - unknown
   - name: lighting
-    dtype: string
+    dtype:
+      class_label:
+        names:
+          - day
+          - night
+          - dusk
+          - indoor
+          - shadow
+          - bright
+          - backlit
+          - mixed
+          - other
+          - unknown
   - name: environment_type
-    dtype: string
+    dtype:
+      class_label:
+        names:
+          - indoor
+          - outdoor
+          - urban
+          - suburban
+          - rural
+          - residential
+          - commercial
+          - industrial
+          - recreational
+          - natural
+          - park
+          - beach
+          - other
+          - unknown
   - name: clip_score
-    dtype: float64   
+    dtype: float64
   - name: image
     dtype: image
 configs:

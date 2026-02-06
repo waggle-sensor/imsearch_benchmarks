@@ -8,7 +8,11 @@ dataset_info:
   - name: image_id
     dtype: string
   - name: relevance_label
-    dtype: int64
+    dtype:
+      class_label:
+        names:
+          - non_relevant
+          - relevant
   - name: doi
     dtype: string
   - name: license
@@ -70,11 +74,53 @@ dataset_info:
   - name: occlusion_present
     dtype: bool
   - name: viewpoint
-    dtype: string
+    dtype:
+      class_label:
+        names:
+          - eye_level
+          - overhead
+          - close_up
+          - distant
+          - street_view
+          - top_down
+          - oblique
+          - side_view
+          - first_person
+          - skyward
+          - other
+          - unknown
   - name: lighting
-    dtype: string
+    dtype:
+      class_label:
+        names:
+          - day
+          - night
+          - dusk
+          - indoor
+          - shadow
+          - bright
+          - backlit
+          - mixed
+          - other
+          - unknown
   - name: environment_type
-    dtype: string
+    dtype:
+      class_label:
+        names:
+          - indoor
+          - outdoor
+          - urban
+          - suburban
+          - rural
+          - residential
+          - commercial
+          - industrial
+          - recreational
+          - natural
+          - park
+          - beach
+          - other
+          - unknown
   - name: clip_score
     dtype: float64
   - name: image

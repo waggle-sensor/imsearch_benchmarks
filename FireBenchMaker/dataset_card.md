@@ -10,7 +10,9 @@ dataset_info:
   - name: relevance_label
     dtype:
       class_label:
-        names: [0, 1]
+        names:
+          - non_relevant
+          - relevant
   - name: license
     dtype: string
   - name: doi
