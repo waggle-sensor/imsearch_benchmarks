@@ -78,6 +78,7 @@ viewpoint = [
     "ground_horizontal", # Ground-based camera looking horizontally
     "fisheye_sky",       # Fisheye lens capturing full sky dome
     "oblique",           # Angled view (not straight up or horizontal)
+    "duo_view",          # Two views of the same scene
     "other",             # Other viewpoint
     "unknown"            # Not possible to determine
 ]

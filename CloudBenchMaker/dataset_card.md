@@ -85,6 +85,7 @@ dataset_info:
           - ground_horizontal
           - fisheye_sky
           - oblique
+          - duo_view
           - other
           - unknown
   - name: lighting
@@ -251,7 +252,7 @@ Each instance in the dataset contains:
 - **license** (string): License information for the image (e.g., "CC0 1.0")
 - **doi** (string): Digital Object Identifier for the source dataset
 - **cloud_category** (string): Cloud type classification from source metadata (e.g., "cirrus", "cumulus", "stratus", "cirrostratus", "cirrocumulus", "altocumulus", "altostratus", "cumulonimbus", "nimbostratus", "stratocumulus", "contrail")
-- **viewpoint** (string): Camera perspective. Values: "ground_upward" (ground-based looking upward), "ground_horizontal" (ground-based horizontal), "fisheye_sky" (fisheye capturing full sky dome), "oblique" (angled view), "other", "unknown"
+- **viewpoint** (string): Camera perspective. Values: "ground_upward" (ground-based looking upward), "ground_horizontal" (ground-based horizontal), "fisheye_sky" (fisheye capturing full sky dome), "oblique" (angled view), "duo_view" (two views of the same scene), "other", "unknown"
 - **lighting** (string): Lighting conditions. Values: "day" (sunlit/daylight), "night" (low light/dark), "dusk" (twilight/sunset/sunrise), "bright" (high brightness/strong sunlight), "overcast_light" (overcast but daylight), "other", "unknown"
 - **cloud_coverage** (string): Percentage of sky covered by clouds. Values: "0%-25%" (clear sky), "25%-50%" (scattered clouds), "50%-75%" (broken clouds), "75%-100%" (overcast), "unknown"
 - **confounder_type** (string): Atmospheric phenomena that might obscure or be confused with clouds. Values: "none" (no confounders), "fog", "haze", "dust", "smoke", "sun_glare", "precipitation", "marine_layer", "industrial_plume", "multiple" (multiple confounders), "unknown"
