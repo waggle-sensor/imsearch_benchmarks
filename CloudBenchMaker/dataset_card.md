@@ -8,7 +8,11 @@ dataset_info:
   - name: image_id
     dtype: string
   - name: relevance_label
-    dtype: int64
+    dtype:
+      class_label:
+        names:
+          - non_relevant
+          - relevant
   - name: doi
     dtype: string
   - name: license
