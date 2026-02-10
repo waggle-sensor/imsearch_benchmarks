@@ -348,7 +348,7 @@ If you use this dataset, please cite:
 	title        = { CloudBench },
 	year         = 2026,
 	url          = { https://huggingface.co/datasets/sagecontinuum/CloudBench },
-	doi          = { FILL_IN_DOI }, #TODO: Add DOI
+	doi          = { 10.57967/hf/7784 },
 	publisher    = { Hugging Face }
 }
 ```
