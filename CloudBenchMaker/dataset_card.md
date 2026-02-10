@@ -33,8 +33,6 @@ dataset_info:
       dtype: float64
     - name: lighting
       dtype: float64
-    - name: environment_type
-      dtype: float64
     - name: multiple_cloud_types
       dtype: float64
     - name: horizon_visible
@@ -99,31 +97,6 @@ dataset_info:
           - overcast_light
           - other
           - unknown
-  - name: environment_type
-    dtype: 
-      class_label:
-        names:
-          - forest
-          - grassland
-          - shrubland
-          - mountainous
-          - urban_wui
-          - coastal
-  - name: cloud_category
-    dtype:
-      class_label:
-        names:
-          - cirrus
-          - cirrostratus
-          - cirrocumulus
-          - altocumulus
-          - altostratus
-          - cumulus
-          - cumulonimbus
-          - nimbostratus
-          - stratocumulus
-          - stratus
-          - contrail
   - name: multiple_cloud_types
     dtype: bool
   - name: horizon_visible
@@ -217,7 +190,6 @@ Each instance in the dataset contains:
     "cloud_coverage": "0%-25%",
     "viewpoint": "ground_upward",
     "lighting": "day",
-    "environment_type": "forest",
     "multiple_cloud_types": false,
     "horizon_visible": false,
     "ground_visible": false,
@@ -232,7 +204,6 @@ Each instance in the dataset contains:
         "cloud_coverage": 0.9,
         "viewpoint": 0.9,
         "lighting": 0.9,
-        "environment_type": 0.9,
         "multiple_cloud_types": 0.9,
         "horizon_visible": 0.9,
         "ground_visible": 0.9,
@@ -251,7 +222,6 @@ Each instance in the dataset contains:
 - **image** (Image): The actual image file
 - **license** (string): License information for the image (e.g., "CC0 1.0")
 - **doi** (string): Digital Object Identifier for the source dataset
-- **cloud_category** (string): Cloud type classification from source metadata (e.g., "cirrus", "cumulus", "stratus", "cirrostratus", "cirrocumulus", "altocumulus", "altostratus", "cumulonimbus", "nimbostratus", "stratocumulus", "contrail")
 - **viewpoint** (string): Camera perspective. Values: "ground_upward" (ground-based looking upward), "ground_horizontal" (ground-based horizontal), "fisheye_sky" (fisheye capturing full sky dome), "oblique" (angled view), "duo_view" (two views of the same scene), "other", "unknown"
 - **lighting** (string): Lighting conditions. Values: "day" (sunlit/daylight), "night" (low light/dark), "dusk" (twilight/sunset/sunrise), "bright" (high brightness/strong sunlight), "overcast_light" (overcast but daylight), "other", "unknown"
 - **cloud_coverage** (string): Percentage of sky covered by clouds. Values: "0%-25%" (clear sky), "25%-50%" (scattered clouds), "50%-75%" (broken clouds), "75%-100%" (overcast), "unknown"
