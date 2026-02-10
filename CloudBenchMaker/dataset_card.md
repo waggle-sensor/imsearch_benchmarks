@@ -21,115 +21,108 @@ dataset_info:
     dtype: string
   - name: tags
     sequence: string
+  - name: clip_score
+    dtype: float64
+  - name: image
+    dtype: image
   - name: confidence
     struct:
-    - name: animal_present
-      dtype: float64
-    - name: artificial_lighting
-      dtype: float64
-    - name: environment_type
-      dtype: float64
-    - name: food_present
-      dtype: float64
-    - name: lighting
-      dtype: float64
-    - name: multiple_objects
-      dtype: float64
     - name: occlusion_present
       dtype: float64
-    - name: outdoor_scene
+    - name: confounder_type
       dtype: float64
-    - name: person_present
-      dtype: float64
-    - name: rural_scene
-      dtype: float64
-    - name: text_visible
-      dtype: float64
-    - name: urban_scene
-      dtype: float64
-    - name: vehicle_present
+    - name: cloud_coverage
       dtype: float64
     - name: viewpoint
       dtype: float64
-  - name: urban_scene
-    dtype: bool
-  - name: rural_scene
-    dtype: bool
-  - name: outdoor_scene
-    dtype: bool
-  - name: vehicle_present
-    dtype: bool
-  - name: person_present
-    dtype: bool
-  - name: animal_present
-    dtype: bool
-  - name: food_present
-    dtype: bool
-  - name: text_visible
-    dtype: bool
-  - name: multiple_objects
-    dtype: bool
-  - name: artificial_lighting
-    dtype: bool
+    - name: lighting
+      dtype: float64
+    - name: multiple_cloud_types
+      dtype: float64
+    - name: horizon_visible
+      dtype: float64
+    - name: ground_visible
+      dtype: float64
+    - name: sun_visible
+      dtype: float64
+    - name: precipitation_visible
+      dtype: float64
+    - name: overcast
+      dtype: float64
+    - name: multiple_layers
+      dtype: float64
+    - name: storm_visible
+      dtype: float64
   - name: occlusion_present
     dtype: bool
-  - name: viewpoint
-    dtype:
+  - name: confounder_type
+    dtype: 
       class_label:
         names:
-          - eye_level
-          - overhead
-          - close_up
-          - distant
-          - street_view
-          - top_down
+          - none
+          - fog
+          - haze
+          - dust
+          - smoke
+          - sun_glare
+          - precipitation
+          - marine_layer
+          - industrial_plume
+          - multiple
+          - unknown
+  - name: cloud_coverage
+    dtype: 
+      class_label:
+        names:
+          - 0%-25%
+          - 25%-50%
+          - 50%-75%
+          - 75%-100%
+          - unknown
+  - name: viewpoint
+    dtype: 
+      class_label:
+        names:
+          - ground_upward
+          - ground_horizontal
+          - fisheye_sky
           - oblique
-          - side_view
-          - first_person
-          - skyward
+          - duo_view
           - other
           - unknown
   - name: lighting
-    dtype:
+    dtype: 
       class_label:
         names:
           - day
           - night
           - dusk
-          - indoor
-          - shadow
           - bright
-          - backlit
-          - mixed
+          - overcast_light
           - other
           - unknown
-  - name: environment_type
-    dtype:
-      class_label:
-        names:
-          - indoor
-          - outdoor
-          - urban
-          - suburban
-          - rural
-          - residential
-          - commercial
-          - industrial
-          - recreational
-          - natural
-          - park
-          - beach
-          - other
-          - unknown
-  - name: clip_score
-    dtype: float64
-  - name: image
-    dtype: image
+  - name: multiple_cloud_types
+    dtype: bool
+  - name: horizon_visible
+    dtype: bool
+  - name: ground_visible
+    dtype: bool
+  - name: sun_visible
+    dtype: bool
+  - name: precipitation_visible
+    dtype: bool
+  - name: overcast
+    dtype: bool
+  - name: multiple_layers
+    dtype: bool
+  - name: storm_visible
+    dtype: bool
 configs:
 - config_name: default
   data_files:
   - split: train
     path: data/train-*
+license: cc-by-4.0
 task_categories:
 - image-classification
 language:
@@ -138,29 +131,28 @@ tags:
 - image-retrieval
 - benchmark
 - computer-vision
-- common-objects
-- coco
+- clouds
+- atmospheric-science
 size_categories:
-- 10K<n<100K
-pretty_name: Common Objects Benchmark
+- 1K<n<10K
+pretty_name: Cloud Benchmark
 ---
 
-# CommonObjectsBench-private: A Benchmark Dataset for General Object Image Retrieval
+# CloudBench: A Benchmark Dataset for Cloud Image Retrieval
 
 ## Dataset Description
 
-CommonObjectsBench is a benchmark dataset for evaluating image retrieval systems on general objects and common scenes. The dataset consists of natural language queries paired with images, along with binary relevance labels indicating whether each image is relevant to the query. The dataset is designed to test retrieval systems' ability to find relevant images based on queries describing common objects and scenes.
->NOTE: This is the private version of the dataset, so urban images from sage nodes are included. The public version is available at [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench). The public version does not include urban images. Please be careful when using the private dataset as the urban images are not allowed to be public.
+CloudBench is a benchmark dataset for evaluating image retrieval systems in the domain of Atmospheric Science specifically focused on clouds. The dataset consists of natural language queries paired with images, along with binary relevance labels indicating whether each image is relevant to the query. The dataset is designed to test retrieval systems' ability to find relevant images based on queries describing clouds.
 
 ![Image Sample](summary/random_image_sample.png)
 
 ### Dataset Summary
 
-CommonObjectsBench contains:
-- **Queries**: Natural language queries describing common objects and scenes
-- **Images**: Real-world imagery from multiple sources (COCO 2017 dataset, Sage Continuum)
+CloudBench contains:
+- **Queries**: Natural language queries describing clouds and their properties
+- **Images**: Real-world imagery from multiple sources (Cirrus Cumulus Stratus Nimbus (CCSN) dataset)
 - **Relevance Labels**: Binary labels (0 = not relevant, 1 = relevant) for each query-image pair
-- **Rich Metadata**: Comprehensive annotations including object descriptions, scene characteristics, and more
+- **Rich Metadata**: Comprehensive annotations to support both retrieval evaluation and analysis.
 - **CLIPScore**: Pre-computed CLIP similarity scores for each query-image pair using apple/DFN5B-CLIP-ViT-H-14-378 model.
 
 The dataset is designed to evaluate:
@@ -189,66 +181,68 @@ Each instance in the dataset contains:
 
 ```python
 {
-    "query_id": "commonobjectsbench_q001",
-    "query_text": "A person riding a bicycle on a sunny day",
-    "image_id": "coco/train2017/000000000139.jpg",
+    "query_id": "cloudbench_q001",
+    "query_text": "A cumulus cloud in the sky",
+    "image_id": "ccsn/train/000000000000.jpg",
     "relevance_label": 1,
     "image": <PIL.Image.Image>,  # The actual image
-    "license": "CC BY 4.0",
-    "doi": "UNKNOWN",
-    "tags": ["person", "bicycle", "outdoor", "day", "sunny", ...],
-    "viewpoint": "eye_level",
-    "lighting": "day",
-    "environment_type": "urban",
-    "multiple_objects": false,
-    "artificial_lighting": false,
+    "license": "CC0 1.0",
+    "doi": "10.7910/DVN/CADDPD",
+    "tags": ["cumulus", ...],
     "occlusion_present": false,
-    "text_visible": false,
-    "person_present": true,
-    "animal_present": false,
-    "food_present": false,
-    "urban_scene": true,
-    "rural_scene": false,
-    "outdoor_scene": true,
-    "vehicle_present": false,
+    "confounder_type": "none",
+    "cloud_coverage": "0%-25%",
+    "viewpoint": "ground_upward",
+    "lighting": "day",
+    "multiple_cloud_types": false,
+    "horizon_visible": false,
+    "ground_visible": false,
+    "sun_visible": false,
+    "precipitation_visible": false,
+    "overcast": false,
+    "multiple_layers": false,
+    "storm_visible": false,
     "confidence": {
+        "occlusion_present": 0.9,
+        "confounder_type": 0.9,
+        "cloud_coverage": 0.9,
         "viewpoint": 0.9,
         "lighting": 0.9,
-        "environment_type": 0.9
-        ...
+        "multiple_cloud_types": 0.9,
+        "horizon_visible": 0.9,
+        "ground_visible": 0.9,
     },
-    "summary": "A person riding a bicycle on a sunny day in an urban setting.",
+    "summary": "A cumulus cloud in the sky.",
     "clip_score": 5.337447166442871
 }
 ```
 
 ### Data Fields
 
-- **query_id** (string): Unique identifier for the query (e.g., "commonobjectsbench_q001")
-- **query_text** (string): Natural language query describing the target objects or scene
-- **image_id** (string): Unique identifier for the image (relative path from source)
+- **query_id** (string): Unique identifier for the query (e.g., "cloudbench_q001")
+- **query_text** (string): Natural language query describing the target cloud type, atmospheric condition, or meteorological feature
+- **image_id** (string): Unique identifier for the image (relative path from source, e.g., "ccsn/Ci/image.jpg")
 - **relevance_label** (int): Binary relevance label (0 = not relevant, 1 = relevant)
 - **image** (Image): The actual image file
-- **license** (string): License information for the image (e.g., "CC BY 4.0")
+- **license** (string): License information for the image (e.g., "CC0 1.0")
 - **doi** (string): Digital Object Identifier for the source dataset
-- **viewpoint** (string): Camera viewpoint (e.g., "eye_level", "overhead", "close_up", "distant", "street_view", "top_down", "oblique", "side_view", "first_person", "skyward", "other", "unknown")
-- **lighting** (string): Lighting conditions (e.g., "day", "night", "dusk", "indoor", "shadow", "bright", "backlit", "mixed", "other", "unknown")
-- **environment_type** (string): Type of environment (e.g., "indoor", "outdoor", "urban", "suburban", "rural", "residential", "commercial", "industrial", "recreational", "natural", "park", "beach", "other", "unknown")
-- **multiple_objects** (bool): Whether more than one distinct object category is present
-- **artificial_lighting** (bool): Whether the main lighting is artificial
-- **occlusion_present** (bool): Whether the main subject is partially occluded
-- **text_visible** (bool): Whether readable text is present in the image
-- **person_present** (bool): Whether a person is present in the image
-- **animal_present** (bool): Whether an animal is present in the image
-- **food_present** (bool): Whether food is present in the image
-- **urban_scene** (bool): Whether the image is an urban scene
-- **rural_scene** (bool): Whether the image is a rural scene
-- **outdoor_scene** (bool): Whether the image is an outdoor scene
-- **vehicle_present** (bool): Whether a vehicle is present in the image
-- **tags** (list of strings): Controlled vocabulary tags describing the image (12-18 tags per image)
-- **confidence** (dict): Confidence scores (0-1) for annotations
-- **summary** (string): Brief factual summary of the image (≤30 words)
-- **clip_score** (float): Pre-computed CLIP similarity score between query and image
+- **viewpoint** (string): Camera perspective. Values: "ground_upward" (ground-based looking upward), "ground_horizontal" (ground-based horizontal), "fisheye_sky" (fisheye capturing full sky dome), "oblique" (angled view), "duo_view" (two views of the same scene), "other", "unknown"
+- **lighting** (string): Lighting conditions. Values: "day" (sunlit/daylight), "night" (low light/dark), "dusk" (twilight/sunset/sunrise), "bright" (high brightness/strong sunlight), "overcast_light" (overcast but daylight), "other", "unknown"
+- **cloud_coverage** (string): Percentage of sky covered by clouds. Values: "0%-25%" (clear sky), "25%-50%" (scattered clouds), "50%-75%" (broken clouds), "75%-100%" (overcast), "unknown"
+- **confounder_type** (string): Atmospheric phenomena that might obscure or be confused with clouds. Values: "none" (no confounders), "fog", "haze", "dust", "smoke", "sun_glare", "precipitation", "marine_layer", "industrial_plume", "multiple" (multiple confounders), "unknown"
+- **occlusion_present** (bool): True if the cloud is partially occluded by other objects or clouds
+- **multiple_cloud_types** (bool): True if multiple distinct cloud types are visible in the image
+- **horizon_visible** (bool): True if the horizon line is visible in the image
+- **ground_visible** (bool): True if ground or terrain is visible in the image
+- **sun_visible** (bool): True if the sun is visible in the image
+- **precipitation_visible** (bool): True if rain, snow, or other precipitation is visible in the image
+- **overcast** (bool): True if the sky is completely overcast (no clear sky visible)
+- **multiple_layers** (bool): True if multiple cloud layers are visible at different altitudes
+- **storm_visible** (bool): True if a storm is visible (e.g., cumulonimbus with storm features)
+- **tags** (list of strings): Controlled vocabulary tags describing atmospheric features, cloud characteristics, and scene elements (12-18 tags per image)
+- **confidence** (dict): Confidence scores (0.0-1.0) for taxonomy fields: `viewpoint`, `lighting`, `cloud_coverage`, `confounder_type`. Higher values indicate higher certainty.
+- **summary** (string): Brief factual summary of the cloud(s) and atmospheric conditions (≤30 words)
+- **clip_score** (float): Pre-computed CLIP similarity score between query and image using apple/DFN5B-CLIP-ViT-H-14-378 model
 
 ### Data Splits
 
@@ -258,20 +252,21 @@ The dataset is provided as a single split. Users can create their own train/vali
 
 ### Curation Rationale
 
-CommonObjectsBench was created to address the need for a standardized benchmark for evaluating image retrieval systems on general objects and common scenes. The dataset focuses on:
+CloudBench was created to address the need for a standardized benchmark for evaluating image retrieval systems in the domain of Atmospheric Science specifically focused on clouds. The dataset focuses on:
 
-1. **Real-world diversity**: Images from multiple sources covering various objects, scenes, and environments
-2. **General-purpose queries**: Queries describing common objects and everyday scenes
+1. **Real-world diversity**: Images from multiple sources covering various clouds, sizes, and positions
+2. **General-purpose queries**: Queries describing clouds and their properties
 3. **Comprehensive annotations**: Rich metadata to support both retrieval evaluation and analysis
 
 ### Source Data
 
 The dataset combines images from two sources:
 
-1. **COCO 2017 Dataset** ([COCO](https://cocodataset.org/#home))
-   - Large-scale object detection, segmentation, and captioning dataset
-   - 80 object categories
-   - DOI: 10.48550/arXiv.1405.0312
+1. **Cirrus Cumulus Stratus Nimbus (CCSN) Dataset** ([CCSN](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/CADDPD))
+   - Large-scale cloud imagery dataset
+   - 2543 cloud images
+   - 11 cloud types
+   - DOI: 10.7910/DVN/CADDPD
 
 2. **Sage Continuum** ([Sage](https://sagecontinuum.org))
    - Cyberinfrastructure sensor network imagery
@@ -304,7 +299,7 @@ The dataset combines images from two sources:
 
 ### Personal and Sensitive Information
 
-The dataset contains private imagery taken from urban sage nodes. Which means it may contain sensitive information such as personal information, private property, or other sensitive information. Please be careful when using the private dataset as the urban images are not allowed to be public.
+The dataset contains publicly available imagery. No personal information is included.
 
 ## Considerations for Using the Data
 
@@ -332,29 +327,45 @@ Potential biases in the dataset:
 
 ### Dataset Curators
 
-The dataset was created using imsearch_benchmaker, a pipeline for creating image retrieval benchmarks. See [imsearch_benchmarks/CommonObjectsBenchMaker](https://github.com/waggle-sensor/imsearch_benchmarks/tree/main/CommonObjectsBenchMaker) for the code implementation.
+The dataset was created using imsearch_benchmaker, a pipeline for creating image retrieval benchmarks. See [imsearch_benchmarks/CloudBenchMaker](https://github.com/waggle-sensor/imsearch_benchmarks/tree/main/CloudBenchMaker) for the code implementation.
 
 ### Licensing Information
 
 Images in the dataset are licensed according to their source:
-- **COCO Dataset**: See source for licensing information
+- **CCSN Dataset**: See source for licensing information
 - **Sage Continuum**: See source for licensing information
 
 The dataset card and annotations are provided under CC BY 4.0.
 
+### Citation Information
+
+If you use this dataset, please cite:
+
+```bibtex
+@misc{cloudbench_2026,
+	author       = { Sage Continuum and Francisco Lozano },
+    affiliation  = { Northwestern University },
+	title        = { CloudBench },
+	year         = 2026,
+	url          = { https://huggingface.co/datasets/sagecontinuum/CloudBench },
+	doi          = { 10.57967/hf/7784 },
+	publisher    = { Hugging Face }
+}
+```
+
 ### Acknowledgments
 
 We thank the creators and maintainers of:
-- COCO Dataset
+- CCSN Dataset
 - Sage Continuum
 
 ## Dataset Statistics
 
-Please refer to the [EDA](summary/CommonObjectBench_eda_analysis.ipynb) in the `summary/` directory.
+Please refer to the [EDA](summary/CloudBench_eda_analysis.ipynb) in the `summary/` directory.
 
 ## Hyperparameters in creating the dataset
 
-Please refer to the [config_values.csv](summary/config_values.csv) file in the [summary/](summary/) directory for the values of the hyperparameters used in the dataset creation.
+Please refer to the [config_values.csv](summary/config_values.csv) file in the `summary/` directory for the values of the hyperparameters used in the dataset creation.
 
 | value | description |
 |-------|-------------|
@@ -364,7 +375,7 @@ query_plan_neg_hard | the number of hard negatives to generate for each query
 query_plan_neg_nearmiss | the number of nearmiss negatives to generate for each query
 query_plan_neg_easy | the number of easy negatives to generate for each query
 query_plan_random_seed | the random seed used for reproducibility
-controlled_tag_vocab | the controlled tag vocabulary for the CommonObjectsBench benchmark
+controlled_tag_vocab | the controlled tag vocabulary for the CloudBench benchmark
 vision_config.system_prompt | the system prompt for the vision annotation
 vision_config.user_prompt | the user prompt for the vision annotation
 vision_config.max_output_tokens | the maximum number of tokens for the vision annotation
@@ -378,6 +389,7 @@ vision_config.price_per_million_output_tokens | the price per million output tok
 vision_config.price_per_million_cached_input_tokens | the price per million cached input tokens for the batch
 vision_config.price_per_million_image_input_tokens | the price per million image input tokens for the batch
 vision_config.price_per_million_image_output_tokens | the price per million image output tokens for the batch
+vision_config.vision_metadata_columns | the existing metadata columns to include in the vision annotation
 judge_config.system_prompt | the system prompt for the judge
 judge_config.user_prompt | the user prompt for the judge
 judge_config.max_output_tokens | the maximum number of tokens for the judge
@@ -399,7 +411,7 @@ similarity_config.use_safetensors | whether to use safetensors for the similarit
 ## References
 
 ```
-Lin, T.-Y., Maire, M., Belongie, S., Bourdev, L., Girshick, R., Hays, J., Perona, P., Ramanan, D., Zitnick, C. L., & Dollár, P. (2015). Microsoft COCO: Common Objects in Context. arXiv preprint arXiv:1405.0312. https://arxiv.org/abs/1405.0312
+Liu, Pu. (2019). Cirrus Cumulus Stratus Nimbus (CCSN) Database (V2) [Data set]. Harvard Dataverse. https://doi.org/10.7910/DVN/CADDPD
 
 Catlett, C. E., P. H. Beckman, R. Sankaran, and K. K. Galvin, 2017: Array of Things: A Scientific Research Instrument in the Public Way: Platform Design and Early Lessons Learned. Proceedings of the 2nd International Workshop on Science of Smart City Operations and Platforms Engineering, 26–33. https://doi.org/10.1109/ICSENS.2016.7808975
 ```
