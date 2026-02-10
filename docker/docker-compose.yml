@@ -10,8 +10,8 @@ services:
     volumes:
       # Mount data directories
       - ./volumes/config:/app/config
-      - ./volumes/inputs:/app/input
-      - ./volumes/outputs:/app/output
+      - ./volumes/inputs:/app/inputs
+      - ./volumes/outputs:/app/outputs
     environment:
       - PYTHONUNBUFFERED=1
       - IMSEARCH_BENCHMAKER_CONFIG_PATH=${IMSEARCH_BENCHMAKER_CONFIG_PATH:-}
