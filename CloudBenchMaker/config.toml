@@ -42,7 +42,7 @@ qrels_jsonl = "/Volumes/data/outputs/cloudbench_qrels.jsonl"
 qrels_with_score_jsonl = "/Volumes/data/outputs/cloudbench_qrels_with_similarity_score.jsonl"
 summary_output_dir = "/Volumes/data/outputs/summary"
 hf_dataset_dir = "/Volumes/data/outputs/hf_dataset"
-hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchmarks/CloudBenchMaker/public/dataset_card.md"
+hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchmarks/CloudBenchMaker/dataset_card.md"
 
 # Query planning
 query_plan_num_seeds = 120  # Number of seed images to use for query generation
