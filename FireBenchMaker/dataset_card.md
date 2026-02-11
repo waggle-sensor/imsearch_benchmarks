@@ -8,11 +8,7 @@ dataset_info:
   - name: image_id
     dtype: string
   - name: relevance_label
-    dtype:
-      class_label:
-        names:
-          - non_relevant
-          - relevant
+    dtype: int64
   - name: license
     dtype: string
   - name: doi
@@ -30,61 +26,17 @@ dataset_info:
     - name: viewpoint
       dtype: float64
   - name: environment_type
-    dtype:
-      class_label:
-        names:
-          - forest
-          - grassland
-          - shrubland
-          - mountainous
-          - urban_wui
-          - coastal
-          - desert
-          - agricultural
-          - water
-          - other
-          - unknown
+    dtype: string
   - name: confounder_type
-    dtype:
-      class_label:
-        names:
-          - cloud
-          - fog_marine_layer
-          - dust
-          - haze
-          - sun_glare
-          - none
-          - unknown
+    dtype: string
   - name: lighting
-    dtype:
-      class_label:
-        names:
-          - day
-          - dusk
-          - night
-          - ir_nir
-          - unknown
+    dtype: string
   - name: flame_visible
     dtype: bool
   - name: plume_stage
-    dtype:
-      class_label:
-        names:
-          - incipient
-          - developing
-          - mature
-          - residual
-          - none
-          - unknown
+    dtype: string
   - name: viewpoint
-    dtype:
-      class_label:
-        names:
-          - fixed_long_range
-          - handheld
-          - aerial
-          - other
-          - unknown
+    dtype: string
   - name: summary
     dtype: string
   - name: clip_score

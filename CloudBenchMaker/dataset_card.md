@@ -8,11 +8,7 @@ dataset_info:
   - name: image_id
     dtype: string
   - name: relevance_label
-    dtype:
-      class_label:
-        names:
-          - non_relevant
-          - relevant
+    dtype: int64
   - name: doi
     dtype: string
   - name: license
@@ -56,51 +52,13 @@ dataset_info:
   - name: occlusion_present
     dtype: bool
   - name: confounder_type
-    dtype: 
-      class_label:
-        names:
-          - none
-          - fog
-          - haze
-          - dust
-          - smoke
-          - sun_glare
-          - precipitation
-          - marine_layer
-          - industrial_plume
-          - multiple
-          - unknown
+    dtype: string
   - name: cloud_coverage
-    dtype: 
-      class_label:
-        names:
-          - 0%-25%
-          - 25%-50%
-          - 50%-75%
-          - 75%-100%
-          - unknown
+    dtype: string
   - name: viewpoint
-    dtype: 
-      class_label:
-        names:
-          - ground_upward
-          - ground_horizontal
-          - fisheye_sky
-          - oblique
-          - duo_view
-          - other
-          - unknown
+    dtype: string
   - name: lighting
-    dtype: 
-      class_label:
-        names:
-          - day
-          - night
-          - dusk
-          - bright
-          - overcast_light
-          - other
-          - unknown
+    dtype: string
   - name: multiple_cloud_types
     dtype: bool
   - name: horizon_visible
