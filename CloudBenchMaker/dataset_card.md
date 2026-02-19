@@ -202,6 +202,9 @@ Each instance in the dataset contains:
 - **summary** (string): Brief factual summary of the cloud(s) and atmospheric conditions (≤30 words)
 - **clip_score** (float): Pre-computed CLIP similarity score between query and image using apple/DFN5B-CLIP-ViT-H-14-378 model
 
+### Row order per query
+For each `query_id`, the **first row** is always the seed image (the original image that was used to generate the query). The metadata in that first row (e.g. `summary`, `tags`, etc.) is the **matching metadata for the query**. The metadata for all **following rows** for the same `query_id` is the **metadata for that candidate image**. This is important when using the dataset for evaluation. As an example, you can use the first row of each query to break down results into metadata categories.
+
 ### Data Splits
 
 The dataset is provided as a single split. Users can create their own train/validation/test splits as needed.
