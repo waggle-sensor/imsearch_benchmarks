@@ -119,10 +119,28 @@ sky_condition = [
 [vision_config]
 adapter = "openai"
 model = "gpt-5-mini"
-system_prompt = """You are a scientist labeling sensor network images for an image-retrieval benchmark focused on queries that reference sensor metadata.
+system_prompt = """You are a scientist labeling sensor network images for a wide range of domains for an image-retrieval benchmark focused on queries that reference sensor metadata.
 Output MUST be valid JSON matching the schema. Do not include extra keys.
 Use the allowed taxonomy values exactly. Be conservative: if unsure, choose 'unknown'.
-Tagging rules: Prefer tags that help retrieval; avoid redundant near-duplicates."""
+Tagging rules: Prefer tags that help retrieval; avoid redundant near-duplicates.
+
+Sensor network guidance:
+- The sensor network is a national network (100+ nodes, 17 states) with RGB/IR cameras, LiDAR, and environmental sensors. 
+- Nodes run ML at the edge and send results to central servers. 
+- Use cases: wildfire, agriculture, urban science, ecosystem monitoring, and more.
+- Benchmark images are from these fixed outdoor nodes; metadata (vsn, zone, job, etc.) identifies the source.
+- The nodes are a cluster of computers that are connected to each other via kubernetes.
+
+Sensor metadata definition:
+- vsn: The node unique identifier.
+- zone: The compute zone used by the image. (for example enclosure, core, shield)
+- host: The host name of the computer that took the image.
+- job: The job name that scheduled the image capture.
+- plugin: The software plugin name that took the image.
+- camera: The camera name that took the image.
+- project: The project name that the node belongs to.
+- address: The address of the node.
+"""
 
 user_prompt = """Analyze this sensor network image and output JSON with the following fields.
 
@@ -155,7 +173,7 @@ Required fields:
 
 5. confidence: 0.0-1.0 confidence score for each taxonomy field (viewpoint, lighting, environment_type, sky_condition). Higher values indicate higher certainty.
 """
-max_output_tokens = 4000
+max_output_tokens = 8000
 reasoning_effort = "low"
 image_detail = "low"
 max_images_per_batch = 900
@@ -208,25 +226,42 @@ controlled_tag_vocab = [
 ]
 
 # Judge adapter configuration (OpenAI)
-#TODO: update to conform to Sagebench
 [judge_config]
 adapter = "openai"
 model = "gpt-5-mini"
-system_prompt = """You are creating and judging an image-retrieval benchmark for Sage sensor images.
+system_prompt = """You are creating and judging an image-retrieval benchmark for sensor network images focused on queries that reference sensor metadata.
 You will receive a query seed (1-3 seed images described by text) and a list of candidates.
-Queries may reference Sage metadata (vsn, zone, host, job, plugin, camera, project, address) or visual content.
+Queries must reference atleast one sensor network metadata (vsn, zone, host, job, plugin, camera, project, address) and visual content.
 Judge relevance from the summaries and metadata provided. When the query mentions metadata (e.g., a specific node or camera), consider metadata match as well as visual relevance.
-Output MUST be valid JSON matching the schema. Binary relevance only: 1 relevant, 0 not relevant."""
+Output MUST be valid JSON matching the schema. Binary relevance only: 1 relevant, 0 not relevant.
+
+Sensor network guidance:
+- The sensor network is a national network (100+ nodes, 17 states) with RGB/IR cameras, LiDAR, and environmental sensors. 
+- Nodes run ML at the edge and send results to central servers. 
+- Use cases: wildfire, agriculture, urban science, ecosystem monitoring, and more.
+- Benchmark images are from these fixed outdoor nodes; metadata (vsn, zone, job, etc.) identifies the source.
+- The nodes are a cluster of computers that are connected to each other via kubernetes.
+
+Sensor metadata definition:
+- vsn: The node unique identifier.
+- zone: The compute zone used by the image. (for example enclosure, core, shield)
+- host: The host name of the computer that took the image.
+- job: The job name that scheduled the image capture.
+- plugin: The software plugin name that took the image.
+- camera: The camera name that took the image.
+- project: The project name that the node belongs to.
+- address: The address of the node.
+"""
 
 user_prompt = """Tasks:
-1) Write a realistic query_text (what someone would ask in a search engine) describing the target images. The query may reference Sage metadata (e.g., node VSN, camera, zone, job) and/or visual content (sky, clouds, scene type).
+1) Write a realistic query_text (what someone would ask in a search engine) describing the target images. The query must reference atleast one sensor network metadata (e.g., vsn, camera, zone, job, etc.) and visual content. for example, "an animal in top camera of vsn 123" or "a fire in the forest in vsn 789"
 
 2) Label each candidate image as relevant (1) or not relevant (0) to that query based on:
    - Visual content and scene description
    - When the query references Sage metadata (vsn, zone, host, job, plugin, camera, project, address), consider whether the candidate's metadata matches.
 
-Be consistent and concise. Consider both metadata and visual content when judging relevance."""
-max_output_tokens = 8000
+Be consistent with the query and try to make the query as concise as possible.. Consider both metadata and visual content when judging relevance."""
+max_output_tokens = 9500
 reasoning_effort = "medium"
 max_queries_per_batch = 600
 max_candidates = 100
