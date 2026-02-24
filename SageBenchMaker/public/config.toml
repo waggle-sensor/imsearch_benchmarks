@@ -178,8 +178,10 @@ controlled_tag_vocab = [
     "daytime", "nighttime", "dusk", "sunrise", "sunset", "twilight", "golden_hour",
     # Terrain and ground
     "horizon", "ground", "terrain", "landscape", "pavement", "road", "bare_ground",
-    # Vegetation and nature (drought mitigation, ecosystem monitoring)
-    "vegetation", "trees", "grass", "shrubs", "forest", "green_space", "drought_stress", "dry_vegetation",
+    # --- Nature, landscape, & weather ---
+    "nature", "tree", "flower", "plant", "grass", "bush", "field", "sky", "cloud", "sun", "moon", "star",
+    "water", "ocean", "lake", "river", "pond", "beach", "mountain", "hill", "valley", "forest", "desert", "park",
+    "snow", "ice", "rock", "sand",
     # Water
     "water", "lake", "ocean", "puddle", "coastal", "stream", "wet_surface",
     # Urban and built environment
@@ -192,6 +194,17 @@ controlled_tag_vocab = [
     "sun_visible", "solar_glare", "backlit", "overcast_light",
     # Sensor and scene context
     "outdoor", "fixed_camera", "wide_angle", "fisheye", "sensor_view", "edge_node",
+    # --- Animals ---
+    "animal", "dog", "cat", "bird", "horse", "cow", "sheep", "goat", "chicken", "duck", "fish", "insect", "reptile", "amphibian", "mammal", "bird",
+    # --- Buildings & structures ---
+    "building", "house", "apartment", "office", "store", "school", "church", "hospital", "skyscraper", "bridge",
+    "road", "street", "avenue", "alley", "lane", "path", "parking_lot", "parking_garage", "traffic_sign", "traffic_light",
+    # --- Scene descriptors ---
+    "day", "night", "sunny", "cloudy", "rainy", "snowy", "foggy", "windy",
+    "close_up", "medium_shot", "wide_shot", "aerial_view",
+    "portrait", "landscape", "action", "group",
+    "colorful", "monochrome", "bright", "dark", "high_contrast", "low_contrast",
+    "sharp", "blurry", "motion_blur", "clear", "detailed", "busy_background",
 ]
 
 # Judge adapter configuration (OpenAI)
