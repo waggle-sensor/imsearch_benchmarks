@@ -43,7 +43,6 @@ hf_dataset_dir = "/Volumes/data/outputs/hf_dataset"
 hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchmarks/SageBenchMaker/public/dataset_card.md"
 
 # Query planning
-#TODO: update to conform to Sagebench
 query_plan_num_seeds = 120
 query_plan_neg_total = 40
 query_plan_neg_hard = 25
@@ -58,60 +57,103 @@ _hf_repo_id = "sagecontinuum/SageBench"
 _hf_private = false
 
 # Boolean columns
-#TODO: update to conform to Sagebench
 columns_boolean = [
-    "horizon_visible",
-    "ground_visible",
-    "sky_dominates",
+    "horizon_present",      # True if horizon line is visible
+    "ground_present",       # True if ground or terrain is visible
+    "sky_dominates",        # Sky dominates the frame
+    "vegetation_present",   # True if trees, grass, plants are visible
+    "water_present",        # True if body of water, puddles, or stream is visible
+    "buildings_present",    # Man-made structures or buildings visible
+    "vehicle_present",      # True if a vehicle appears in the image
+    "person_present",       # True if a person appears in the image
+    "animal_present",       # True if an animal appears in the image
+    "night_scene",           # Image is clearly night or very low light
+    "precipitation_visible", # Rain, snow, or other precipitation visible
+    "multiple_objects",     # True if more than one distinct object category is present
 ]
 
 # Taxonomy columns
-#TODO: update to conform to Sagebench
 [columns_taxonomy]
 viewpoint = [
-    "ground_upward",
-    "ground_horizontal",
-    "oblique",
+    "ground_upward",     # Camera tilted up, sky-focused
+    "ground_horizontal", # Camera level, horizon in frame
+    "oblique",           # Angled, neither level nor straight up
+    "fisheye_sky",       # Wide/fisheye sky dome (e.g. top camera)
+    "street_view",      # Facing along or across a street/sidewalk
+    "overhead",         # From above, e.g., drone, surveillance camera
+    "distant",          # Object small/far in frame
+    "duo_view",          # Two views of the same scene
     "other",
     "unknown"
 ]
 lighting = [
-    "day",
-    "night",
-    "dusk",
+    "day",            # Full daylight
+    "night",          # Dark, low light, or artificial light
+    "dusk",           # Twilight, sunrise, sunset
+    "overcast_light", # Daylight but overcast
+    "other",
+    "unknown"
+]
+environment_type = [
+    "sky_dominant",   # Mostly sky in frame
+    "ground_dominant", # Mostly ground/terrain
+    "mixed",          # Balanced sky and ground
+    "urban",          # Buildings, streets, built environment dominant
+    "rural",          # Rural area dominant
+    "vegetation",     # Trees, grass, natural green dominant
+    "water",          # Body of water dominant
+    "other",
+    "unknown"
+]
+sky_condition = [
+    "clear",          # Clear sky
+    "partly_cloudy",  # Some clouds
+    "overcast",       # Cloudy, no clear sky
+    "fog_or_haze",    # Reduced visibility, fog or haze
+    "precipitation",  # Rain, snow, or other precipitation visible
     "other",
     "unknown"
 ]
 
 # Vision adapter configuration (OpenAI)
-#TODO: update to conform to Sagebench
 [vision_config]
 adapter = "openai"
 model = "gpt-5-mini"
-system_prompt = """You are labeling Sage sensor images for an image-retrieval benchmark.
+system_prompt = """You are a scientist labeling sensor network images for an image-retrieval benchmark focused on queries that reference sensor metadata.
 Output MUST be valid JSON matching the schema. Do not include extra keys.
 Use the allowed taxonomy values exactly. Be conservative: if unsure, choose 'unknown'.
 Tagging rules: Prefer tags that help retrieval; avoid redundant near-duplicates."""
 
-user_prompt = """Analyze this Sage sensor image and output JSON with the following fields.
+user_prompt = """Analyze this sensor network image and output JSON with the following fields.
 
-Metadata context: This image is from Sage node {metadata.vsn}, zone {metadata.zone}, host {metadata.host}, job {metadata.job}, plugin {metadata.plugin}, camera {metadata.camera}, project {metadata.project}, address {metadata.address}. Use this as context.
+Sensor metadata: This image is from a sensor network node called {metadata.vsn}, in the zone {metadata.zone}, hosted by {metadata.host}, with job {metadata.job}, plugin {metadata.plugin}, camera {metadata.camera}, project {metadata.project}, and address {metadata.address}. Use this as context.
 
 Required fields:
 1. summary: <= 30 words, factual description of the scene. No speculation.
 
 2. Taxonomy fields (use exact values from allowed lists):
-   - viewpoint: Camera perspective
-   - lighting: Lighting conditions
+   - viewpoint: Camera perspective (ground_upward, ground_horizontal, oblique, fisheye_sky, street_view, overhead, distant, duo_view, other, unknown)
+   - lighting: Lighting conditions (day, night, dusk, overcast_light, other, unknown)
+   - environment_type: What dominates the scene (sky_dominant, ground_dominant, mixed, urban, rural, vegetation, water, other, unknown)
+   - sky_condition: Weather/atmosphere (clear, partly_cloudy, overcast, fog_or_haze, precipitation, other, unknown)
 
 3. Boolean fields (true/false):
-   - horizon_visible: Horizon line is visible
-   - ground_visible: Ground or terrain visible
+   - horizon_present: Horizon line is visible
+   - ground_present: Ground or terrain visible
    - sky_dominates: Sky dominates the frame
+   - vegetation_present: Trees, grass, or plants visible
+   - water_present: Body of water, puddles, or stream visible
+   - buildings_present: Man-made structures or buildings visible
+   - vehicle_present: Cars, trucks, or other vehicles visible
+   - person_present: One or more people visible in frame
+   - animal_present: An animal appears in the image
+   - night_scene: Image is clearly night or very low light
+   - precipitation_present: Rain, snow, or other precipitation visible
+   - multiple_objects: More than one distinct object category is present
 
 4. tags: Choose 12-18 tags ONLY from the provided enum list. Focus on scene content and conditions.
 
-5. confidence: 0.0-1.0 confidence score for each taxonomy field (viewpoint, lighting).
+5. confidence: 0.0-1.0 confidence score for each taxonomy field (viewpoint, lighting, environment_type, sky_condition). Higher values indicate higher certainty.
 """
 max_output_tokens = 4000
 reasoning_effort = "low"
@@ -129,11 +171,27 @@ price_per_million_image_output_tokens = 1.00
 min_tags = 12
 max_tags = 18
 controlled_tag_vocab = [
-    "sky", "clouds", "clear_sky", "partly_cloudy", "overcast",
-    "horizon_visible", "ground_visible", "terrain_visible",
-    "daytime", "nighttime", "dusk", "sunrise", "sunset",
-    "outdoor", "landscape", "vegetation", "urban", "rural",
-    "sensor_view", "fixed_camera", "wide_angle",
+    # Sky and atmosphere (cloud analysis, solar irradiance)
+    "sky", "clouds", "clear_sky", "partly_cloudy", "overcast", "blue_sky", "cloudy",
+    "fog", "haze", "smoke", "smoke_plume", "storm_clouds",
+    # Time of day
+    "daytime", "nighttime", "dusk", "sunrise", "sunset", "twilight", "golden_hour",
+    # Terrain and ground
+    "horizon", "ground", "terrain", "landscape", "pavement", "road", "bare_ground",
+    # Vegetation and nature (drought mitigation, ecosystem monitoring)
+    "vegetation", "trees", "grass", "shrubs", "forest", "green_space", "drought_stress", "dry_vegetation",
+    # Water
+    "water", "lake", "ocean", "puddle", "coastal", "stream", "wet_surface",
+    # Urban and built environment
+    "urban", "buildings", "streets", "infrastructure", "rural", "residential",
+    # Fire science
+    "fire_visible", "smoke_visible", "burn_scar", "haze_from_fire",
+    # Weather and precipitation
+    "rain", "snow", "precipitation", "wet_conditions",
+    # Solar (irradiance / PV use case)
+    "sun_visible", "solar_glare", "backlit", "overcast_light",
+    # Sensor and scene context
+    "outdoor", "fixed_camera", "wide_angle", "fisheye", "sensor_view", "edge_node",
 ]
 
 # Judge adapter configuration (OpenAI)
