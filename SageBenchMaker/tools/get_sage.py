@@ -15,7 +15,7 @@ from io import BytesIO
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 import pandas as pd
 import random
 from datetime import datetime, timedelta
@@ -47,6 +47,9 @@ total_days = (time_end - time_start).days
 
 NUM_TIME_SLOTS = 200
 TIME_SLOT_DURATION_HOURS = 0.5
+
+# Manifest API (project and address are not in query meta; fetch from manifest per VSN)
+MANIFEST_API = os.environ.get("MANIFEST_API", "https://auth.sagecontinuum.org/manifests/")
 
 # VSN configuration
 SAGE_URBAN_IMAGERY = os.getenv("SAGE_URBAN_IMAGERY", "false").lower()
@@ -136,11 +139,47 @@ def download_images(df, output_dir, auth, max_workers=MAX_WORKERS):
     return results
 
 
+def get_manifest_for_vsn(vsn):
+    """Fetch manifest for a VSN and return (project, address). project/address are not in query meta."""
+    if not vsn or (isinstance(vsn, float) and pd.isna(vsn)):
+        return "unknown", "unknown"
+    vsn = str(vsn).strip().upper()
+    try:
+        response = requests.get(urljoin(MANIFEST_API, vsn), timeout=10)
+        response.raise_for_status()
+        manifest = response.json()
+        project = manifest.get("project", "unknown")
+        address = manifest.get("address", "unknown")
+        return (
+            "" if project is None else str(project).strip(),
+            "" if address is None else str(address).strip(),
+        )
+    except Exception as e:
+        logger.warning(f"Could not fetch manifest for VSN {vsn}: {e}")
+        return "unknown", "unknown"
+
+
+def fetch_manifest_cache(df):
+    """Build vsn -> (project, address) from manifest API for all unique VSNs in df."""
+    vsn_col = "meta.vsn" if "meta.vsn" in df.columns else None
+    if vsn_col is None:
+        return {}
+    unique_vsns = df[vsn_col].dropna().astype(str).str.strip().str.upper().unique().tolist()
+    cache = {}
+    for vsn in unique_vsns:
+        if vsn and vsn != "NAN":
+            cache[vsn] = get_manifest_for_vsn(vsn)
+    logger.info(f"Fetched manifest (project, address) for {len(cache)} unique VSNs")
+    return cache
+
+
 def write_metadata_jsonl(df, output_dir, metadata_path):
     """
     Write metadata.jsonl with image_id (relative to image root) and Sage metadata columns.
     image_id uses 'sage/' prefix so paths are relative to image_root_dir.
+    project and address are fetched from the manifest API (not in query meta).
     """
+    manifest_cache = fetch_manifest_cache(df)
     os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
     with open(metadata_path, "w") as f:
         for _, row in df.iterrows():
@@ -148,6 +187,15 @@ def write_metadata_jsonl(df, output_dir, metadata_path):
             image_id = os.path.join("sage", relative_path).replace("\\", "/")
             entry = {"image_id": image_id}
             for key in SAGE_METADATA_KEYS:
+                if key == "project":
+                    vsn = row["meta.vsn"] if "meta.vsn" in row.index else None
+                    vsn_key = str(vsn).strip().upper() if vsn is not None and not pd.isna(vsn) else ""
+                    proj, addr = manifest_cache.get(vsn_key, ("unknown", "unknown"))
+                    entry["project"] = proj
+                    entry["address"] = addr
+                    continue
+                if key == "address":
+                    continue  # already set with project
                 meta_col = f"meta.{key}"
                 if meta_col in row.index:
                     val = row[meta_col]
