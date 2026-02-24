@@ -37,7 +37,7 @@ SAGE_METADATA_KEYS = ["vsn", "zone", "host", "job", "plugin", "camera", "project
 
 # Configuration
 # Time frame for querying (ISO format: "YYYY-MM-DDTHH:MM:SS.000Z")
-TIME_FRAME_START = "2022-01-01T00:00:00.000Z" #TODO: update this to conform to Sagebench, I might have to go more in the future to get up the date meta fields
+TIME_FRAME_START = "2025-01-01T00:00:00.000Z"
 TIME_FRAME_END = (datetime.now() - timedelta(weeks=1)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000Z"
@@ -70,8 +70,8 @@ else:
     ]
 UNALLOWED_NODES_SET = set(vsn.lower() for vsn in UNALLOWED_NODES)
 
-IMAGE_TASKS = "imagesampler-top" #TODO: update this to conform to Sagebench
-SAMPLE_SIZE = 2543
+IMAGE_TASKS = "imagesampler-.*"
+SAMPLE_SIZE = 5000
 
 # Output configuration: images under image_root/sage/, metadata at image_root/metadata.jsonl
 OUTPUT_DIR = "/tmp/SageBench/images/sage"
