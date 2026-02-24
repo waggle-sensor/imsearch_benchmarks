@@ -37,7 +37,7 @@ SAGE_METADATA_KEYS = ["vsn", "zone", "host", "job", "plugin", "camera", "project
 
 # Configuration
 # Time frame for querying (ISO format: "YYYY-MM-DDTHH:MM:SS.000Z")
-TIME_FRAME_START = "2025-01-01T00:00:00.000Z"
+TIME_FRAME_START = "2024-01-01T00:00:00.000Z"
 TIME_FRAME_END = (datetime.now() - timedelta(weeks=1)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.000Z"
@@ -45,7 +45,7 @@ time_start = datetime.strptime(TIME_FRAME_START, TIME_FORMAT)
 time_end = datetime.strptime(TIME_FRAME_END, TIME_FORMAT)
 total_days = (time_end - time_start).days
 
-NUM_TIME_SLOTS = min(max(total_days // 7, 20), 360)
+NUM_TIME_SLOTS = 200
 TIME_SLOT_DURATION_HOURS = 0.5
 
 # VSN configuration
