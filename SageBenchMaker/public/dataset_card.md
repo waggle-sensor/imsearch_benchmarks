@@ -226,6 +226,7 @@ If you use this dataset, please cite:
 	title        = { SageBench },
 	year         = 2026,
 	url          = { https://huggingface.co/datasets/sagecontinuum/SageBench },
+	doi          = { FILL_IN_DOI }, #TODO: Add DOI
 	publisher    = { Hugging Face }
 }
 ```

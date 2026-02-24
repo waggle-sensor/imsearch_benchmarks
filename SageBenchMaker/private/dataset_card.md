@@ -1,4 +1,5 @@
 ---
+#TODO: update the dataset card to conform to Sagebench
 dataset_info:
   features:
   - name: query_id
@@ -173,6 +174,7 @@ If you use this dataset, please cite:
 	title        = { SageBench-private },
 	year         = 2026,
 	url          = { https://huggingface.co/datasets/sagecontinuum/SageBench-private },
+	doi          = { FILL_IN_DOI }, #TODO: Add DOI
 	publisher    = { Hugging Face }
 }
 ```
