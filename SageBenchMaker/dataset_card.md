@@ -308,52 +308,52 @@ Please refer to the [config_values.csv](summary/config_values.csv) file in the `
 
 | value | description |
 |-------|-------------|
-query_plan_num_seeds | the number of seed images to use for query generation |
-query_plan_pos_total | the number of positive images to generate for each query |
-query_plan_neutral_total | the number of neutral images to generate for each query |
-query_plan_neg_total | the total number of negatives to generate for each query |
-query_plan_neg_hard | the number of hard negatives to generate for each query |
-query_plan_neg_easy | the number of easy negatives to generate for each query |
-query_plan_random_seed | the random seed used for reproducibility |
-query_plan_seed_image_ids_column | the column name for seed image IDs |
-query_plan_candidate_image_ids_column | the column name for candidate image IDs |
-columns_boolean | the list of boolean scene flags (horizon_present, ground_present, sky_dominates, etc.) |
-columns_taxonomy | the taxonomy dimensions and allowed values (viewpoint, lighting, environment_type, sky_condition) |
-controlled_tag_vocab | the controlled tag vocabulary for the SageBench benchmark |
-min_tags | minimum number of tags per image |
-max_tags | maximum number of tags per image |
-vision_config.adapter | the adapter for the vision annotation (e.g. openai) |
-vision_config.model | the model for the vision annotation (e.g. gpt-5-mini) |
-vision_config.system_prompt | the system prompt for the vision annotation |
-vision_config.user_prompt | the user prompt for the vision annotation |
-vision_config.max_output_tokens | the maximum number of tokens for the vision annotation |
-vision_config.reasoning_effort | the reasoning effort for the vision annotation |
-vision_config.image_detail | the image detail level (low, medium, high) |
-vision_config.max_images_per_batch | the maximum number of images per vision batch shard |
-vision_config.completion_window | the completion window for the batch |
-vision_config.vision_metadata_columns | the Sage metadata columns included in the vision annotation (vsn, zone, host, job, plugin, camera, project, address) |
-vision_config.price_per_million_input_tokens | the price per million input tokens for the vision annotation |
-vision_config.price_per_million_output_tokens | the price per million output tokens for the vision annotation |
-vision_config.price_per_million_cached_input_tokens | the price per million cached input tokens for the batch |
-vision_config.price_per_million_image_input_tokens | the price per million image input tokens for the batch |
-vision_config.price_per_million_image_output_tokens | the price per million image output tokens for the batch |
-judge_config.adapter | the adapter for the judge (e.g. openai) |
-judge_config.model | the model for the judge (e.g. gpt-5-mini) |
-judge_config.system_prompt | the system prompt for the judge |
-judge_config.user_prompt | the user prompt for the judge |
-judge_config.max_output_tokens | the maximum number of tokens for the judge |
-judge_config.reasoning_effort | the reasoning effort for the judge |
-judge_config.max_queries_per_batch | the maximum number of queries per judge batch shard |
-judge_config.max_candidates | the maximum number of candidates per query |
-judge_config.completion_window | the completion window for the batch |
-judge_config.price_per_million_input_tokens | the price per million input tokens for the judge |
-judge_config.price_per_million_output_tokens | the price per million output tokens for the judge |
-judge_config.price_per_million_cached_input_tokens | the price per million cached input tokens for the judge |
-similarity_config.adapter | the adapter for the similarity scoring (e.g. local_clip) |
-similarity_config.model | the model for the similarity scoring (e.g. apple/DFN5B-CLIP-ViT-H-14-378) |
-similarity_config.col_name | the column name for the similarity score |
-similarity_config.device | the device to run the similarity scoring on |
-similarity_config.use_safetensors | whether to use safetensors for the similarity scoring |
+query_plan_num_seeds | the number of seed images to use for query generation
+query_plan_pos_total | the number of positive images to generate for each query
+query_plan_neutral_total | the number of neutral images to generate for each query
+query_plan_neg_total | the total number of negatives to generate for each query
+query_plan_neg_hard | the number of hard negatives to generate for each query
+query_plan_neg_easy | the number of easy negatives to generate for each query
+query_plan_random_seed | the random seed used for reproducibility
+query_plan_seed_image_ids_column | the column name for seed image IDs
+query_plan_candidate_image_ids_column | the column name for candidate image IDs
+columns_boolean | the list of boolean scene flags (horizon_present, ground_present, sky_dominates, etc.)
+columns_taxonomy | the taxonomy dimensions and allowed values (viewpoint, lighting, environment_type, sky_condition)
+controlled_tag_vocab | the controlled tag vocabulary for the SageBench benchmark
+min_tags | minimum number of tags per image
+max_tags | maximum number of tags per image
+vision_config.adapter | the adapter for the vision annotation (e.g. openai)
+vision_config.model | the model for the vision annotation (e.g. gpt-5-mini)
+vision_config.system_prompt | the system prompt for the vision annotation
+vision_config.user_prompt | the user prompt for the vision annotation
+vision_config.max_output_tokens | the maximum number of tokens for the vision annotation
+vision_config.reasoning_effort | the reasoning effort for the vision annotation
+vision_config.image_detail | the image detail level (low, medium, high)
+vision_config.max_images_per_batch | the maximum number of images per vision batch shard
+vision_config.completion_window | the completion window for the batch
+vision_config.vision_metadata_columns | the Sage metadata columns included in the vision annotation (vsn, zone, host, job, plugin, camera, project, address)
+vision_config.price_per_million_input_tokens | the price per million input tokens for the vision annotation
+vision_config.price_per_million_output_tokens | the price per million output tokens for the vision annotation
+vision_config.price_per_million_cached_input_tokens | the price per million cached input tokens for the batch
+vision_config.price_per_million_image_input_tokens | the price per million image input tokens for the batch
+vision_config.price_per_million_image_output_tokens | the price per million image output tokens for the batch
+judge_config.adapter | the adapter for the judge (e.g. openai)
+judge_config.model | the model for the judge (e.g. gpt-5-mini)
+judge_config.system_prompt | the system prompt for the judge
+judge_config.user_prompt | the user prompt for the judge
+judge_config.max_output_tokens | the maximum number of tokens for the judge
+judge_config.reasoning_effort | the reasoning effort for the judge
+judge_config.max_queries_per_batch | the maximum number of queries per judge batch shard
+judge_config.max_candidates | the maximum number of candidates per query
+judge_config.completion_window | the completion window for the batch
+judge_config.price_per_million_input_tokens | the price per million input tokens for the judge
+judge_config.price_per_million_output_tokens | the price per million output tokens for the judge
+judge_config.price_per_million_cached_input_tokens | the price per million cached input tokens for the judge
+similarity_config.adapter | the adapter for the similarity scoring (e.g. local_clip)
+similarity_config.model | the model for the similarity scoring (e.g. apple/DFN5B-CLIP-ViT-H-14-378)
+similarity_config.col_name | the column name for the similarity score
+similarity_config.device | the device to run the similarity scoring on
+similarity_config.use_safetensors | whether to use safetensors for the similarity scoring
 
 ### Acknowledgments
 
