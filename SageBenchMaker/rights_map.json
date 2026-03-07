@@ -1,0 +1,15 @@
+{
+  "default": {
+    "license": "UNKNOWN",
+    "doi": "UNKNOWN"
+  },
+  "prefixes": [
+    {
+      "prefix": "sage/",
+      "license": "UNKNOWN",
+      "doi": "10.1109/ICSENS.2016.7808975",
+      "dataset_name": "Sage Continuum"
+    }
+  ]
+}
+

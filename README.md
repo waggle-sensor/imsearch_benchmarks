@@ -14,6 +14,7 @@ This repository provides tools and pipelines to create standardized benchmark da
 | CommonObjectsBench | General Objects & Scenes 🌍 | A benchmark dataset for evaluating text-to-image retrieval systems on general objects and common scenes. | [CommonObjectsBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CommonObjectsBench) | [CommonObjectsBenchMaker](CommonObjectsBenchMaker/) |
 | CloudBench | Nephology(Atmospheric Science) 🌥 | A benchmark dataset for evaluating text-to-image retrieval systems in the domain of Atmospheric Science specifically focused on clouds. | [CloudBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/CloudBench) | [CloudBenchMaker](CloudBenchMaker/) |
 | Inquire | Biology 🌿 | A benchmark dataset for evaluating text-to-image retrieval systems in the domain of biology. | [INQUIRE-Benchmark-small on Hugging Face](https://huggingface.co/datasets/sagecontinuum/INQUIRE-Benchmark-small) | [Inquire](Inquire/) |
+| SageBench | Sage Continuum 🌲 | A benchmark dataset for evaluating text-to-image retrieval systems on Sage Continuum sensor images when queries reference Sage metadata (vsn, zone, host, job, plugin, camera, project, address). | [SageBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/SageBench) | [SageBenchMaker](SageBenchMaker/) |
 
 ## Framework
 
