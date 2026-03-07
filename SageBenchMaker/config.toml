@@ -44,10 +44,11 @@ hf_dataset_card_path = "/Users/franciscolozano/Documents/Github/imsearch_benchma
 
 # Query planning
 query_plan_num_seeds = 120
-query_plan_neg_total = 40
-query_plan_neg_hard = 25
-query_plan_neg_nearmiss = 10
-query_plan_neg_easy = 5
+query_plan_pos_total = 21 
+query_plan_neutral_total = 6 
+query_plan_neg_total = 13
+query_plan_neg_hard = 7
+query_plan_neg_easy = 6
 query_plan_random_seed = 14
 query_plan_seed_image_ids_column = "seed_image_ids"
 query_plan_candidate_image_ids_column = "candidate_image_ids"

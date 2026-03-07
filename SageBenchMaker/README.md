@@ -14,32 +14,23 @@ The dataset is designed to test retrieval systems' ability to:
 - Retrieve images based on natural language queries that may reference Sage metadata (node/VSN, zone, host, job, plugin, camera, project, address)
 - Combine visual relevance with metadata-aware matching when the query mentions metadata
 
-**Final Public Dataset**: [SageBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/SageBench)  
-**Final Private Dataset**: [SageBench-private on Hugging Face](https://huggingface.co/datasets/sagecontinuum/SageBench-private)
-
-> **Note**: The private dataset may include imagery from urban Sage nodes, which are not allowed in the public dataset. Use the private dataset only in accordance with Sage Continuum and institutional policies; do not redistribute urban imagery publicly.
+**Final Dataset**: [SageBench on Hugging Face](https://huggingface.co/datasets/sagecontinuum/SageBench)  
 
 ## Directory Structure
 
 ```
 SageBenchMaker/
-├── public/
-│   ├── config.toml       # Config for public benchmark (non-urban nodes only)
-│   └── dataset_card.md
-├── private/
-│   ├── config.toml       # Config for private benchmark
-│   └── dataset_card.md
 ├── tools/
 │   ├── get_sage.py       # Download Sage images and write metadata.jsonl
 │   └── requirements.txt
+├── config.toml       # Config for benchmark
+├── dataset_card.md
 ├── README.md
 ├── env.template
 ├── requirements.txt
 └── rights_map.json
 ```
-
-The `public/` directory contains the configuration and dataset card for the public dataset (non-urban Sage nodes only).  
-The `private/` directory contains the configuration and dataset card for the private dataset (may include urban nodes).  
+ 
 The `tools/` directory contains the script used to collect images and write metadata.
 
 ## Source Data
@@ -47,7 +38,7 @@ The `tools/` directory contains the script used to collect images and write meta
 All images come from **[Sage Continuum](https://sagecontinuum.org)**. The `tools/get_sage.py` script:
 
 - Queries Sage for image data (configurable time frames, VSN filters)
-- By default **excludes urban nodes**; set `SAGE_URBAN_IMAGERY=true` to include them (for the private benchmark)
+- By default **excludes urban nodes**; set `SAGE_URBAN_IMAGERY=true` to include them (for a private benchmark)
 - Downloads images to `image_root_dir/sage/`
 - **Writes `metadata.jsonl`** at `image_root_dir/metadata.jsonl` with `image_id` plus Sage metadata: **vsn, zone, host, job, plugin, camera, project, address**
 
@@ -111,3 +102,17 @@ Key settings in `public/config.toml` and `private/config.toml`:
 ## Acknowledgments
 
 We thank the creators and maintainers of Sage Continuum.
+
+
+
+
+# NOTES
+- I started the timeframe for random sampling of sage images from 2025 to make sure I get up to date metadata structure.
+   - older metadata structure are missing the camera field.
+- I had to update NUM_TIME_SLOTS to 200 to reach the desired number of images (5000 sample size).
+   - Sampled 5000 images from 6046 total images after the tool got the images from the 200 time slots
+- lost 2 images due to broken data stream when reading image file when downloading the images.
+- total images downloaded 4998 and will be served to benchmaker
+- lost 37 images in the vision stage due gpt-5-mini outputting \n or \r characters after the expected output. This causes the max tokens limit to be exceeded.
+- lost 12 query/image pairs in the similarity stage due to unknown errors in the similarity scoring process.
+- I ended up with 2392 query/image pairs in the final dataset.
